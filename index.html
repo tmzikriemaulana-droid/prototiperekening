@@ -1,0 +1,909 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototipe Pembukaan Rekening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#1A5FD6; --brand-dark:#134BAF; --brand-soft:#E7F0FD;
+  --bg:#EEF2F6; --card:#FFFFFF; --text:#1D2433; --muted:#8A94A6; --line:#CDD5DF;
+  --disabled:#8FB3EC; --err:#D93025; --err-soft:#FDECEA; --ok:#1E9E5A; --ok-soft:#E6F6EE;
+  --warn:#B26A00; --warn-soft:#FFF4E0;
+  --page:#DCE3EA; --panel:#FFFFFF; --panel-text:#1D2433;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --page:#11161D; --panel:#1A212B; --panel-text:#E6EBF2; }
+}
+:root[data-theme="dark"]{ --page:#11161D; --panel:#1A212B; --panel-text:#E6EBF2; }
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);font-family:"Nunito Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);min-height:100vh}
+.stage{display:flex;gap:32px;justify-content:center;align-items:flex-start;padding:32px 16px}
+/* phone */
+.phone{width:390px;height:844px;background:var(--bg);border-radius:44px;box-shadow:0 0 0 10px #1b1f26,0 24px 60px rgba(0,0,0,.35);overflow:hidden;position:relative;flex:none;display:flex;flex-direction:column}
+.status{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 30px;font-weight:700;font-size:15px;color:#fff;background:var(--brand);flex:none}
+.status.light{background:var(--bg);color:var(--text)}
+.hero{background:var(--brand);color:#fff;position:relative;flex:none;padding:6px 16px 0;overflow:hidden}
+.hero::before{content:"";position:absolute;right:-60px;top:-90px;width:220px;height:220px;border-radius:50%;border:1px solid rgba(255,255,255,.18)}
+.hero::after{content:"";position:absolute;left:-80px;top:40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.05)}
+.topbar{display:flex;align-items:center;height:48px;position:relative;z-index:1}
+.back{width:36px;height:36px;border:0;background:none;color:#fff;font-size:24px;cursor:pointer;border-radius:50%;display:grid;place-items:center}
+.back:focus-visible{outline:2px solid #fff}
+.topbar h1{flex:1;text-align:center;margin:0 36px 0 0;font-size:19px;font-weight:800;letter-spacing:.1px}
+.prog{position:relative;z-index:1;margin:6px 4px 0;height:4px;background:rgba(255,255,255,.28);border-radius:4px;overflow:hidden}
+.prog i{display:block;height:100%;background:#fff;border-radius:4px;transition:width .35s ease}
+.steplabel{position:relative;z-index:1;font-size:12px;opacity:.85;margin:6px 4px 0;padding-bottom:58px}
+.body{flex:1;overflow-y:auto;margin-top:-52px;position:relative;z-index:2;padding:0 16px 16px;scroll-behavior:smooth}
+.card{background:var(--card);border-radius:14px;padding:20px 18px;margin-bottom:14px}
+.card h2{font-size:17px;margin:0 0 4px;font-weight:800}
+.card .sub{color:var(--muted);font-size:13px;margin:0 0 14px;line-height:1.45}
+.f{margin-bottom:16px}
+.f:last-child{margin-bottom:0}
+.f label,.lbl{display:block;font-weight:700;font-size:15px;margin-bottom:8px}
+.req{color:var(--err);margin-left:2px}
+.inp{width:100%;height:52px;border:1px solid var(--line);border-radius:9px;padding:0 16px;font:inherit;font-size:16px;color:var(--text);background:#fff;outline:none;transition:border-color .15s}
+.inp::placeholder{color:#A9B1BE}
+.inp:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.inp.bad{border-color:var(--err);background:#FFFBFB}
+.inp.good{border-color:#9AD3B4}
+.inp:disabled{background:#F2F4F7;color:#A9B1BE}
+.sel{display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:left}
+.sel .ph{color:#A9B1BE}
+.sel .caret{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid #5A6475;flex:none;margin-left:8px}
+.sel .val{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.dur{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dur .f .lbl{font-size:12.5px}
+.pdfbar{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;font-weight:700;color:var(--text);background:var(--card);border-radius:10px;padding:10px 12px;margin:0 0 10px}
+.pdfpage{background:#fff;border-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,.12);overflow:hidden;margin-bottom:12px}
+.pdfpage img{display:block;width:100%;height:auto}
+.pdfpage.crop{aspect-ratio:1100/680}
+.rdoc{background:#fff;color:#1D2433;border-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,.12);padding:14px;font-size:11.5px;margin-bottom:12px}
+.rhead{display:flex;flex-direction:column;margin-bottom:8px}.rhead b{font-size:20px;color:var(--brand-dark)}.rhead span{font-size:11px;color:var(--brand)}
+.rbar{background:linear-gradient(90deg,var(--brand),var(--brand-dark));color:#fff;font-weight:800;text-align:center;font-size:10.5px;padding:4px;margin:10px 0 6px;border-radius:2px}
+.rt{width:100%;border-collapse:collapse}.rt td{padding:4px 2px;border-bottom:1px solid #EDF0F4;vertical-align:top}.rt td:last-child{text-align:right;font-weight:700}
+.rl{margin:4px 0;padding-left:18px;line-height:1.5}.rp{margin:4px 0;line-height:1.5}
+.consent-intro{font-size:14px;line-height:1.55;color:var(--muted);margin:0 0 12px}
+.consent-intro b{color:var(--text)}
+.lnk{display:inline;text-align:left;color:var(--brand);font-weight:700;text-decoration:underline;cursor:pointer;background:none;border:0;padding:0;font:inherit;line-height:inherit}
+.row-lain{display:grid;grid-template-columns:110px 1fr;gap:10px;margin-top:10px}
+.hint{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.4}
+.err{font-size:12.5px;color:var(--err);margin-top:6px;line-height:1.4;display:none;font-weight:600}
+.err.show{display:flex;gap:6px}
+.err.box.show{background:var(--err-soft);border:1.5px solid var(--err);border-radius:10px;padding:10px 12px;margin-top:10px}
+.err.show::before{content:"!";flex:none;width:15px;height:15px;border-radius:50%;background:var(--err);color:#fff;font-size:11px;display:grid;place-items:center;margin-top:1px}
+.chk{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:15px;line-height:1.4;user-select:none}
+.f label.chk,label.chk{display:flex;font-weight:400;font-size:14.5px;margin-bottom:0}
+.chk input{appearance:none;width:22px;height:22px;border:1.5px solid #9AA4B2;border-radius:5px;flex:none;margin:0;cursor:pointer;display:grid;place-items:center;background:#fff}
+.chk input:checked{background:var(--brand);border-color:var(--brand)}
+.chk input:checked::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.chk input:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.radios{display:flex;gap:28px}
+.rad{display:flex;gap:10px;align-items:center;cursor:pointer;font-size:15px}
+.rad input{appearance:none;width:22px;height:22px;border:1.5px solid #9AA4B2;border-radius:50%;margin:0;cursor:pointer;display:grid;place-items:center}
+.rad input:checked{border-color:var(--brand)}
+.rad input:checked::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--brand)}
+.rad input:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.foot{flex:none;padding:12px 16px 26px;background:var(--bg)}
+.btn{width:100%;height:52px;border:0;border-radius:10px;background:var(--brand);color:#fff;font:inherit;font-size:17px;font-weight:800;cursor:pointer;transition:background .15s}
+.btn:hover{background:var(--brand-dark)}
+.btn.off{background:var(--disabled)}
+.btn.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand);margin-top:10px}
+.btn:focus-visible{outline:3px solid #0C2F6E;outline-offset:2px}
+.choice{border:1.5px solid var(--line);border-radius:14px;padding:18px;background:#fff;cursor:pointer;margin-bottom:12px;display:flex;gap:14px;align-items:center;width:100%;text-align:left;font:inherit;color:inherit}
+.choice.on{border-color:var(--brand);background:var(--brand-soft)}
+.choice b{display:block;font-size:16px;margin-bottom:4px}
+.choice span{font-size:13px;color:var(--muted);line-height:1.4}
+.choice .ic{width:52px;height:52px;border-radius:50%;background:var(--brand-soft);display:grid;place-items:center;flex:none;font-size:22px;color:var(--brand);font-weight:800}
+.choice.on .ic{background:var(--brand);color:#fff}
+.scan{border:2px dashed #A3C1F0;border-radius:14px;height:200px;display:grid;place-items:center;background:linear-gradient(135deg,#F4F8FE,#E0EBFB);position:relative;overflow:hidden;margin-bottom:14px}
+.ktp{width:240px;height:150px;border-radius:10px;background:linear-gradient(135deg,#7AA5E8,#BCD3F5);box-shadow:0 6px 18px rgba(26,95,214,.25);position:relative}
+.ktp::before{content:"";position:absolute;right:16px;top:30px;width:52px;height:66px;border-radius:6px;background:rgba(255,255,255,.6)}
+.ktp::after{content:"";position:absolute;left:16px;top:34px;width:120px;height:62px;background:repeating-linear-gradient(#fff 0 6px,transparent 6px 14px);opacity:.7}
+.scanline{position:absolute;left:0;right:0;height:3px;background:var(--brand);box-shadow:0 0 12px var(--brand);top:0;animation:scan 1.1s ease-in-out infinite}
+.scan video,.scan img.shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.scan .guide{position:absolute;inset:22px 34px;border:2px solid rgba(255,255,255,.9);border-radius:10px;box-shadow:0 0 0 999px rgba(0,0,0,.28)}
+.face video,.face img.shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}
+.face video{transform:scaleX(-1)}
+.camnote{font-size:12px;color:var(--muted);text-align:center;margin:-6px 0 10px}
+@keyframes scan{0%{top:8%}50%{top:88%}100%{top:8%}}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.info{background:var(--brand-soft);color:var(--brand)}
+.sumsec{border-top:1px solid #EDF0F4;padding-top:12px;margin-top:12px}
+.sumsec:first-of-type{border-top:0;margin-top:0;padding-top:0}
+.sumhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.sumhead b{font-size:15px}
+.edit{border:0;background:none;color:var(--brand);font:inherit;font-weight:700;font-size:13px;cursor:pointer;padding:4px}
+.kv{display:grid;grid-template-columns:130px 1fr;gap:4px 10px;font-size:13.5px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:600;word-break:break-word}
+.gate{border:1.5px solid #9AD3B4;background:var(--ok-soft)}
+.gate.fail{border-color:#F2B8B3;background:var(--err-soft)}
+.gaterow{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:7px 0;border-bottom:1px dashed rgba(0,0,0,.08)}
+.gaterow:last-child{border-bottom:0}
+.gaterow em{font-style:normal;font-weight:800}
+.pass{color:var(--ok)} .failt{color:var(--err)}
+.map{font-size:12.5px;width:100%;border-collapse:collapse;margin-top:8px}
+.map td{padding:6px 4px;border-bottom:1px solid #EDF0F4;vertical-align:top}
+.map td:first-child{color:var(--muted);width:44%}
+.map code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#F2F4F7;padding:1px 5px;border-radius:4px}
+.chkbtn{border:0;background:var(--err);color:#fff;font:inherit;font-size:12px;font-weight:800;padding:4px 10px;border-radius:6px;cursor:pointer;flex:none;height:fit-content}
+.chkbtn:hover{background:#B3261E}.chkbtn:focus-visible{outline:2px solid #0C2F6E;outline-offset:2px}
+.face{width:200px;height:200px;border-radius:50%;border:3px dashed #A3C1F0;margin:6px auto 16px;display:grid;place-items:center;position:relative;background:#F4F8FE}
+.face.scanning{border-style:solid;border-color:var(--brand);animation:pulse 1s ease-in-out infinite}
+.face.ok{border-style:solid;border-color:var(--ok);background:var(--ok-soft)}
+.facetick{position:absolute;right:14px;bottom:14px;width:40px;height:40px;border-radius:50%;background:var(--ok);color:#fff;font-weight:800;display:grid;place-items:center;font-size:20px}
+@keyframes pulse{50%{box-shadow:0 0 0 12px rgba(26,95,214,.15)}}
+.done{text-align:center;padding:30px 10px 10px}
+.done .tick{width:84px;height:84px;border-radius:50%;background:var(--ok);margin:0 auto 18px;display:grid;place-items:center}
+.done .tick::after{content:"";width:22px;height:40px;border:solid #fff;border-width:0 6px 6px 0;transform:rotate(45deg) translate(-4px,-4px)}
+.done h2{font-size:22px;margin:0 0 8px}
+.done p{color:var(--muted);margin:0 0 18px;font-size:14px;line-height:1.5}
+.acct{background:var(--brand-soft);border-radius:12px;padding:14px;font-weight:800;font-size:20px;letter-spacing:1px;color:var(--brand-dark)}
+.welcome .big{font-size:24px;font-weight:800;margin:4px 0 8px;line-height:1.25}
+.list{margin:0;padding:0;list-style:none}
+.list li{display:flex;gap:12px;align-items:flex-start;padding:10px 0;font-size:14.5px;line-height:1.4;border-bottom:1px solid #EDF0F4}
+.list li:last-child{border-bottom:0}
+.list .n{width:26px;height:26px;border-radius:50%;background:var(--brand-soft);color:var(--brand);font-weight:800;font-size:13px;display:grid;place-items:center;flex:none}
+/* sheet */
+.scrim{position:absolute;inset:0;background:rgba(15,23,35,.45);z-index:20;display:none}
+.scrim.open{display:block}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:78%;background:#fff;border-radius:20px 20px 0 0;z-index:21;transform:translateY(105%);transition:transform .25s ease;display:flex;flex-direction:column}
+.sheet.open{transform:none}
+.grab{width:40px;height:5px;border-radius:5px;background:#D5DBE3;margin:10px auto 6px}
+.sheet h3{margin:6px 20px 12px;font-size:19px;font-weight:800}
+.search{margin:0 16px 8px;height:46px;border-radius:24px;border:0;background:#EEF1F5;padding:0 18px;font:inherit;font-size:15px;outline:none}
+.search:focus{box-shadow:0 0 0 2px var(--brand)}
+.opts{overflow-y:auto;padding:0 20px 24px}
+.opt{display:block;width:100%;text-align:left;border:0;background:none;font:inherit;font-size:15.5px;color:var(--text);padding:15px 0;border-bottom:1px solid #EDF0F4;cursor:pointer}
+.opt small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+.opt.cur{color:var(--brand);font-weight:700}
+.opt:focus-visible{outline:2px solid var(--brand)}
+.empty{color:var(--muted);font-size:14px;padding:16px 0}
+.toast{position:absolute;left:16px;right:16px;bottom:96px;background:#2A313C;color:#fff;border-radius:10px;padding:12px 14px;font-size:13.5px;z-index:30;opacity:0;transform:translateY(8px);transition:all .2s;pointer-events:none}
+.toast.show{opacity:1;transform:none}
+/* notes panel */
+.panel{width:360px;background:var(--panel);color:var(--panel-text);border-radius:18px;padding:22px;position:sticky;top:24px}
+.panel h4{margin:0 0 2px;font-size:13px;color:#8A94A6;font-weight:700}
+.panel .ttl{font-size:20px;font-weight:800;margin:0 0 14px;line-height:1.25}
+.note{display:flex;gap:10px;padding:10px 0;border-top:1px solid rgba(138,148,166,.22);font-size:14px;line-height:1.45}
+.tag{flex:none;font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;height:fit-content;white-space:nowrap}
+.tag.ref{background:#E3F7F7;color:#0E7C7B}
+.tag.dq{background:#E7F0FD;color:#134BAF}
+.tag.sk{background:#FDF0E6;color:#A04A00}
+.tag.now{background:#EEF0F3;color:#5A6475}
+.demo{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.dbtn{border:1px solid rgba(138,148,166,.45);background:transparent;color:inherit;font:inherit;font-size:13px;font-weight:700;padding:8px 12px;border-radius:8px;cursor:pointer}
+.dbtn:hover{border-color:var(--brand);color:var(--brand)}
+.legend{font-size:12px;color:#8A94A6;margin-top:14px;line-height:1.5}
+.jump{margin-top:16px;display:flex;flex-wrap:wrap;gap:6px}
+.jump button{border:0;background:rgba(138,148,166,.14);color:inherit;font:inherit;font-size:12px;padding:5px 9px;border-radius:6px;cursor:pointer}
+.jump button.cur{background:var(--brand);color:#fff}
+@media (max-width:820px){
+  .stage{flex-direction:column;align-items:center;padding:16px}
+  .panel{width:100%;max-width:390px;position:static}
+}
+@media (max-width:430px){
+  .stage{padding:0 0 16px}
+  .phone{width:100%;height:100svh;border-radius:0;box-shadow:none}
+  .panel{border-radius:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<style>
+.qh{font-size:20px;font-weight:800;margin:0 0 6px;line-height:1.3}
+.addrrow{display:grid;grid-template-columns:1fr 52px;gap:8px}
+.srch{height:52px;border:1px solid var(--line);border-radius:9px;background:var(--brand-soft);color:var(--brand);cursor:pointer;display:grid;place-items:center}
+.srch:focus-visible{outline:2px solid var(--brand)}
+.locact{display:flex;gap:12px;align-items:center;width:100%;border:0;background:none;font:inherit;font-weight:700;font-size:15.5px;color:var(--text);padding:15px 0;border-bottom:1px solid #EDF0F4;cursor:pointer;text-align:left}
+.locact .ico{width:28px;height:28px;border-radius:8px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:none;font-size:14px}
+.doc{font-size:13px;line-height:1.5}
+.doc table{width:100%;border-collapse:collapse;margin:8px 0 14px}
+.doc th{background:var(--brand);color:#fff;text-align:left;padding:7px 8px;font-size:12.5px}
+.doc td{border-bottom:1px solid #EDF0F4;padding:7px 8px;vertical-align:top}
+.doc td:last-child{font-weight:700;text-align:right;white-space:nowrap}
+.vc{text-align:center;padding:10px 4px}
+.vc .av{width:120px;height:120px;border-radius:50%;background:var(--brand-soft);margin:6px auto 18px;display:grid;place-items:center}
+.prep{background:#F6F8FB;border-radius:10px;padding:12px 14px;text-align:left;font-size:14px;margin-top:14px}
+.prep ul{margin:6px 0 0;padding-left:18px;line-height:1.7}
+.sub2{font-size:13px;color:var(--muted);font-weight:700;margin:18px 0 10px;text-transform:none}
+</style>
+<div class="stage">
+  <div class="phone" id="phone">
+    <div class="status"><span>09.41</span><span>●●● 5G ▮</span></div>
+    <div class="hero">
+      <div class="topbar"><button class="back" id="back" aria-label="Kembali">←</button><h1 id="title"></h1></div>
+      <div class="prog"><i id="prog"></i></div>
+      <div class="steplabel" id="steplabel"></div>
+    </div>
+    <div class="body" id="body"></div>
+    <div class="foot" id="foot"></div>
+    <div class="scrim" id="scrim"></div>
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <div class="grab"></div>
+      <h3 id="sheetTitle"></h3>
+      <input class="search" id="sheetSearch" placeholder="Cari" aria-label="Cari">
+      <div class="opts" id="sheetOpts"></div>
+    </div>
+    <div class="toast" id="toast" role="status"></div>
+    <input type="file" id="fileKtp" accept="image/*" capture="environment" hidden>
+    <input type="file" id="fileFace" accept="image/*" capture="user" hidden>
+  </div>
+
+  <aside class="panel" aria-label="Catatan perbaikan">
+    <h4>Layar ini</h4>
+    <p class="ttl" id="pTitle"></p>
+    <div id="pNotes"></div>
+    <div class="demo">
+      <button class="dbtn" id="fillGood">Isi contoh data benar</button>
+      <button class="dbtn" id="fillBad">Coba isi data buruk</button>
+      <button class="dbtn" id="fillStudent">Contoh mahasiswa + wali</button>
+    </div>
+    <div class="jump" id="jump"></div>
+    <p class="legend"><span class="tag ref">Pola referensi</span> alur dari aplikasi referensi &nbsp; <span class="tag sk">SK Lampiran</span> rule resmi SK Standardisasi Kualitas Data Nasabah &nbsp; <span class="tag dq">DQ Gate</span> usulan BPIP<br>Mockup konseptual untuk BPIP, bukan tampilan aplikasi yang sudah berjalan. Semua data contoh fiktif.<br>Acuan: SK Standardisasi Kualitas Data Nasabah (EDM&amp;A, 30 Sep 2026) beserta Lampiran 1–4, dan Buku 11 Bagian 2 (REG.SE.37-KPD/12/2025). Daftar perusahaan, sekolah, dan kode pos di mockup hanya contoh.</p>
+  </aside>
+</div>
+
+<script>
+/* =========================================================
+   Parameter mengikuti Lampiran SK Standardisasi Kualitas Data Nasabah
+   (3.2 Mapping Informasi Pekerjaan, 3.4–3.12 List Parameter, 4 List Bad Data)
+   ========================================================= */
+const KOTA=['Kota Balikpapan','Kab. Penajam Paser Utara','Kota Samarinda','Kab. Kutai Kartanegara','Kab. Paser','Kota Bontang','Kab. Berau','Kota Tarakan','Kota Banjarmasin','Kota Makassar','Kota Surabaya','Kota Malang','Kota Semarang','Kota Yogyakarta','Kota Bandung','Kota Bekasi','Kota Depok','Kota Tangerang','Kota Jakarta Selatan','Kota Jakarta Timur','Kota Medan','Kota Palembang','Kota Denpasar','Kota Manado'];
+const P=(arr)=>arr.map(([c,v])=>({v,c}));
+const LIST={
+  gender:P([['M','Laki-laki'],['F','Perempuan']]),
+  agama:P([['ISL','Islam'],['KRI','Protestan'],['KAT','Katolik'],['HIN','Hindu'],['BUD','Budha'],['KHC','Konghucu'],['ZZZ','Lainnya']]),
+  kawin:P([['B','Belum Kawin'],['K','Kawin'],['D','Duda'],['J','Janda']]),
+  pendidikan:P([['XX','Tidak/Belum Sekolah'],['SD','Sekolah Dasar'],['SM','Sekolah Menengah Pertama'],['SU','Sekolah Menengah Umum/ Kejuruan'],['D1','Diploma 1'],['D2','Diploma 2'],['D3','Diploma 3'],['S1','Sarjana'],['S2','Master'],['S3','Doktoral']]),
+  tujuan:P([['T1','Tabungan'],['T2','Transaksi'],['T3','Pribadi (Investasi)'],['ZZ','Lainnya']]),
+  penghasilan:P([['G0','Tidak Memiliki Penghasilan'],['G1','Penghasilan s.d 5 juta'],['G2','Penghasilan 5 - 10 juta'],['G3','Penghasilan 10 - 50 juta'],['G4','Penghasilan 50 - 100 juta'],['G5','Penghasilan di atas 100 juta']]),
+  sumber:P([['00011','Gaji/Pendapatan Rutin'],['00012','Hasil Usaha/Omzet'],['00099','Lainnya']]),
+  transaksi:P([['N0','Tidak Bertransaksi'],['N1','Transaksi Harian s.d. 10 juta'],['N2','Transaksi Harian s.d. 50 juta'],['N3','Transaksi Harian s.d. 100 juta'],['N4','Transaksi Harian s.d. 1 milyar'],['N5','Transaksi Harian lebih dari 1 milyar']]),
+};
+const JAB={20:'Presiden',21:'Wakil Presiden',22:'Menteri',23:'Pejabat setingkat menteri',100:'Wakil Menteri',101:'Ketua KPK',14:'Ketua MPR',15:'Wakil Ketua MPR',17:'Ketua DPR',18:'Wakil Ketua DPR',102:'Ketua DPD',103:'Wakil Ketua DPD',104:'Ketua Lembaga Tinggi Negara',105:'Wakil Ketua Lembaga Tinggi Negara',106:'Ketua Mahkamah Konstitusi',107:'Duta Besar/Kepala Perwakilan',43:'Panglima TNI, KSAD, KSAU, KSAL',111:'Anggota KPK',112:'Anggota BPK',16:'Anggota MPR',19:'Anggota DPR',113:'Anggota DPD',114:'Anggota Mahkamah Konstitusi',115:'Anggota Kabinet/Kementrian',116:'Anggota DPRD',117:'Anggota Lembaga Tinggi Negara',45:'Pejabat yang mengeluarkan perijinan',46:'Pejabat Pembuat Regulasi',62:'Pengawas Bea dan Cukai',123:'Perangkat Desa',108:'Wakil Camat',109:'Ketua DPRD',110:'Wakil Ketua DPRD',1:'Direktur Utama/Presiden Dir/CEO',2:'Direktur',3:'Komisaris Utama/Presiden Kom.',4:'Komisaris',5:'Wakil Direktur',25:'Gubernur',26:'Wakil Gubernur',27:'Walikota',28:'Wakil Walikota',29:'Bupati',30:'Wakil Bupati',31:'Camat',32:'Lurah / Kepala Desa',33:'Hakim',34:'Direksi BUMN atau BUMD',35:'Komisaris BUMN atau BUMD',38:'Kepala Divisi BUMN atau BUMD',39:'Wakil Kepala Divisi BUMN atau BUMD',40:'Rektor',41:'Jaksa',42:'Kapolri, Wakapolri, Kapolda, Wakapolda',44:'Penyidik',47:'Panitera',63:'Auditor',64:'Staf',65:'Petugas Administrasi',66:'Petugas Kebersihan',67:'Petugas Keamanan',68:'Koki/Chef/Juru Masak',71:'Wakil Rektor',72:'Dekan',73:'Wakil Dekan',74:'Ketua Prodi',75:'Dosen',76:'Kepala Sekolah',77:'Wakil Kepala Sekolah',78:'Guru',79:'Kepala Tata Usaha',80:'Ahli Utama',81:'Ahli Madya',82:'Ahli Muda',83:'Ahli Pertama',84:'PPPK/ Honorer',85:'Pengawas',86:'Pelaksana',87:'Guru Private/Les',89:'Pemilik',90:'Eksekutif',91:'Manager',92:'Supervisor',93:'Sekretaris',94:'Petani',95:'Nelayan/Perikan',96:'Peternak',97:'Pekebun',99:'Tidak Ada Jabatan',118:'Perwira Tinggi',119:'Perwira Menengah',120:'Perwira Pertama',121:'Bintara',122:'Tamtama',124:'Pengacara',125:'Notaris',126:'Pelayan/Pramusaji',127:'Bartender/Barista',128:'Housekeeper',129:'Terapis',130:'Dokter Umum',131:'Dokter Spesialis',132:'Dokter Hewan',133:'Dokter Gigi',134:'Psikiater/Psikolog',135:'Bidan',136:'Perawat',137:'Ahli Farmasi',138:'Apoteker',139:'Fisioterapis',140:'Ahli Spesialis',141:'Asisten Ahli',142:'Peneliti',143:'Teknisi Service/Mekanik',144:'Teknisi Transportasi',145:'Teknisi Kesehatan',146:'Teknisi Operator',147:'Engineer',148:'Insinyur',149:'Arsitek',150:'Desain Interior',151:'Surveyor',152:'Sutradara',153:'Komposer/ Musisi',154:'Artis/Aktor/ Komedian/ Model',155:'Penari',156:'Penulis/ Ilustrator/ Pelukis/ Animator',157:'Fotografer',158:'Desainer',159:'Content Creator / Influencer',160:'Wartawan',161:'Jurnalis',162:'Editor',163:'Penyiar Radio',164:'Penyiar Televisi',165:'Pembawa Acara/ Host',166:'Pilot/ Co-Pilot',167:'Nahkoda',168:'Masinis',169:'Pramugara/i',170:'Awak Kapal/Pelaut',171:'Sopir',172:'Ojek',173:'Kurir',174:'Buruh',175:'Asisten Rumah Tangga',176:'Pemulung',177:'Kuli Bangunan',178:'Tukang Kayu',179:'Tukang Batu',180:'Tukang Listrik',181:'Tukang Kebun',182:'Tukang Sol Sepatu',183:'Tukang Las/Pandai Besi',184:'Tukang Gigi',185:'Penata Rias',186:'Penata Rambut/Tukang Cukur',187:'Penata Busana/Tukang Jahit',188:'Penerjemah Bahasa Isyarat',189:'Penerjemah Bahasa Asing',190:'Pendeta',191:'Pastor',192:'Ustadz/Ustadzah/Mubaligh',193:'Biarawan/ Biarawati',194:'Imam Masjid',195:'Biksu',196:'Paranormal/Ahli Spiritual/Tabib/Paraji',197:'Pelatih',198:'Wasit',199:'Atlet',200:'Dealer',201:'Broker',202:'Trader'};
+const BID={'0003':'Hukum dan Akuntansi','0004':'Kantor Pusat dan Konsultasi Manajemen','0005':'Arsitektur dan Keinsinyuran; Analisis dan Uji Teknis','0006':'Penelitian dan Pengembangan Ilmu Pengetahuan','0007':'Periklanan dan Penelitian Pasar','0008':'Profesional, Ilmiah dan Teknis Lainnya','0009':'Kesehatan Hewan','0010':'Pengelolaan Kehutanan dan Penebangan','0011':'Pertanian Tanaman, Peternakan, Perburuan dan Kegiatan YBDI','0012':'Perikanan','0022':'Industri Minuman','0024':'Industri Tekstil','0025':'Industri Pakaian Jadi','0027':'Industri Kayu dan Barang Anyaman','0030':'Industri Produk dari Batu Bara dan Pengilangan Minyak Bumi','0031':'Industri Makanan','0032':'Industri Pengolahan Lainnya','0033':'Industri Bahan Kimia','0034':'Industri Farmasi dan Obat Tradisional','0035':'Industri Karet dan Plastik','0037':'Industri Logam Dasar','0038':'Industri Barang Logam','0039':'Industri Komputer, Elektronik dan Optik','0041':'Industri Mesin dan Perlengkapan','0042':'Industri Kendaraan Bermotor','0044':'Industri Furnitur','0046':'Reparasi dan Pemasangan Mesin dan Peralatan','0050':'Penunjang Jasa Keuangan, Asuransi, Penjaminan dan Dana Pensiun','0054':'Perdagangan, Reparasi dan Perawatan Mobil dan Sepeda Motor','0055':'Perdagangan Besar, Bukan Mobil dan Sepeda Motor','0056':'Angkutan Darat dan Angkutan Melalui Saluran Pipa','0057':'Angkutan Perairan','0058':'Angkutan Udara','0059':'Pos dan Kurir','0061':'Perdagangan Eceran, Bukan Mobil dan Motor','0063':'Penyediaan Akomodasi','0064':'Penyediaan Makanan dan Minuman','0065':'Penerbitan','0066':'Produksi Film, Video, Program Televisi dan Musik','0067':'Penyiaran dan Pemrograman','0069':'Pemrograman, Konsultasi Komputer dan Kegiatan YBDI','0070':'Jasa Informasi','0071':'Pergudangan dan Aktivitas Penunjang Angkutan','0076':'Penyedia Jasa untuk Gedung dan Pertamanan','0086':'Hiburan, Kesenian dan Kreativitas','0088':'Olahraga dan Rekreasi Lainnya','0089':'Keanggotaan Organisasi','0091':'Administrasi Pemerintahan, Pertahanan dan Jaminan Sosial Wajib','0092':'Pendidikan','0093':'Kesehatan Manusia','0095':'Jasa Perorangan Lainnya','0097':'Rumah Tangga sebagai Pemberi Kerja Personil Domestik','9999':'Tidak Ada Bidang Pekerjaan'};
+const ALL='ALL';
+/* [kode, deskripsi, label Tempat Bekerja (3.2), jabatan, bidang] */
+const JOBS=[
+ ['AKUN','Akunting / Keuangan','Nama Kantor Akuntan',[89,1,2,3,4,63,64,65],['0003','0050']],
+ ['DAGA','Pedagang','Nama Tempat Usaha/ Jenis Dagangan',[89,64],['0054','0055','0061']],
+ ['GURU','Pengajar/Guru/Dosen','Nama Sekolah/Universitas',[40,71,72,73,74,75,76,77,78,79],['0092']],
+ ['KONS','Konsultan','Nama Perusahaan',[89,1,2,3,4,64,65],['0069','0070','0004']],
+ ['MAHA','Mahasiswa','Nama Sekolah/Universitas',[99],['0092']],
+ ['PELA','Pelajar','Nama Sekolah/Universitas',[99],['0092']],
+ ['PENG','Penganggur/Belum Bekerja/Pencari Kerja','N/A',[99],['9999']],
+ ['PENS','Pensiunan','Nama Perusahaan Terakhir',[99],ALL],
+ ['PROF','Professional (Ahli)','Nama Lembaga/Perusahaan',[140,141,87],['0004','0007','0008']],
+ ['RISE','Riset dan Peneliti','Nama Lembaga/Perusahaan',[142,140,141],['0006']],
+ ['SENI','Pekerja Seni (Artis, Pelukis, Musisi)','Nama Perusahaan/Nama Tempat Usaha/ Jenis Bidang Seni',[152,153,154,155,156,157,158,159],['0086','0066']],
+ ['TECH','Technical / Engineering-lainnya','Nama Perusahaan/ Nama Tempat Usaha',[147,148,149,150,151,143,144,145,146],['0005','0046','0069','0070']],
+ ['WIRA','Wiraswasta','Nama Tempat Usaha',[89],ALL],
+ ['PNSI','Pegawai Negeri Sipil','Nama Instansi',[80,81,82,83,85,86,84,64,65],['0091']],
+ ['BUMN','Pegawai BUMN','Nama Perusahaan BUMN',[34,35,38,39,63,64,65,66,67,90,91,92,86,93],ALL],
+ ['SWAS','Pegawai Swasta','Nama Perusahaan',[1,2,3,4,5,63,64,65,66,67,90,91,92,86,93],ALL],
+ ['IBRT','Ibu Rumah Tangga','N/A',[99],['9999']],
+ ['DKTR','Dokter','Nama Rumah Sakit/Klinik/Tempat Praktek/Instansi Kesehatan',[130,131,132,133,134],['0093','0009']],
+ ['MLTR','Militer (AU,AD,AL,PM)','Nama Instansi Lengkap',[43,44,118,119,120,121,122],['0091']],
+ ['POLS','Polisi','Instansi Kepolisian – Daerah/Kesatuannya/Kedinasannya',[42,44,118,119,120,121,122],['0091']],
+ ['PJBN','Pejabat Negara','Instansi/Lembaga Negara/Lembaga Tinggi Negara',[20,21,22,100,23,101,14,15,17,18,102,103,104,105,106,107],['0091']],
+ ['PJBD','Pejabat Daerah','Instansi/Lembaga Daerah/Lembaga Tinggi Daerah',[25,26,27,28,29,30,31,108,32,109,110],['0091']],
+ ['PGLN','Pegawai Pemerintahan/Lembaga Negara','Instansi/Lembaga Negara/Lembaga Tinggi Negara',[111,112,16,19,113,114,115,116,141,117,45,46,62,123],['0091']],
+ ['PNPP','Pekebun/Nelayan/Perikanan/Peternakan','Jenis Tani/ Nelayan/ Perikanan/ Kebun/ Ternak',[94,95,96,97],['0011','0010','0012']],
+ ['BUMD','Pegawai BUMD','Nama Perusahaan BUMD',[34,35,38,39,64,65,66,67,90,91,92,86,93],ALL],
+ ['TSPR','Transportasi','Nama Perusahaan/ Jenis Bidang Transportasi',[166,167,168,169,170,171,172,173],['0056','0057','0058','0071','0059']],
+ ['BRUH','Buruh Harian Lepas/Freelance','Nama Perusahaan/ Tempat Usaha/ Jenis Bidang Buruh',[174,175,66,176,177,178,179,180,181,182,183,184],['0031','0022','0024','0025','0027','0030','0032','0033','0035','0038','0041','0044','0046','0097','0076']],
+ ['PENA','Penata Rias/Rambut/Busana','Nama Perusahaan/ Nama Tempat Usaha',[185,186,187],['0095']],
+ ['PJMH','Penerjemah','Nama Lembaga/ Nama Perusahaan',[188,189],['0008']],
+ ['KAGM','Keagamaan','Nama Lembaga/ Nama Organisasi',[190,191,192,193,194,195,196],['0089']],
+ ['WRTW','Wartawan/Jurnalis','Nama Perusahaan',[160,161,162,163,164,165],['0065','0067']],
+ ['HFNB','Perhotelan dan Restoran','Nama Hotel/Restoran/Cafe',[89,90,91,92,68,126,127,128,129,64],['0063','0064']],
+ ['EOPA','Event Organizer/Promotor Acara','Nama Perusahaan',[89,64],['0086']],
+ ['MEDS','Tenaga Medis','Nama Rumah Sakit/Klinik/Tempat Praktek/Instansi Kesehatan/Apotik',[135,136,137,138,139],['0093','0009']],
+ ['BROK','Pialang/Broker','Nama Perusahaan',[200,201,202],['0050']],
+ ['ATLT','Atlit','Nama Lembaga',[197,198,199,64],['0088']],
+ ['HKUM','Hukum (Pengacara, Notaris, Jaksa, Dll)','Nama Lembaga/ Nama Perusahaan',[124,125,41,33,44,47,65],['0003']]
+].map(([c,v,tb,jab,bid])=>({c,v,tb,jab:jab.length?jab:[64],bid}));
+const jobOf=d=>JOBS.find(j=>j.v===d);
+const NA_JOBS=['PENG','IBRT'];           /* Tempat bekerja N/A, alamat = domisili (2.1 no. 40) */
+const G0_JOBS=['PENG','MAHA','PELA','IBRT'];/* penghasilan wajib G0 (2.1 no. 13) */
+const SCHOOLS=['SMA Negeri 1 Balikpapan','SMA Negeri 5 Balikpapan','SMK Negeri 1 Balikpapan','SMP Negeri 1 Balikpapan','Universitas Balikpapan','Politeknik Negeri Balikpapan','Institut Teknologi Kalimantan','Universitas Mulawarman'];
+const COMPANIES=['PT Pertamina Hulu Mahakam','PT Kilang Pertamina Internasional','PT Pelabuhan Indonesia (Persero)','PT Angkasa Pura Indonesia','PT PLN (Persero)','PT Telkom Indonesia (Persero) Tbk','PT Kaltim Prima Coal','PT Pupuk Kalimantan Timur','Pemerintah Kota Balikpapan','Pemerintah Provinsi Kalimantan Timur','RSUD dr. Kanujoso Djatiwibowo','Universitas Balikpapan','Politeknik Negeri Balikpapan'];
+const KODEPOS=[
+  ['76111','Prapatan','Balikpapan Kota','Kota Balikpapan'],['76112','Klandasan Ilir','Balikpapan Kota','Kota Balikpapan'],['76113','Klandasan Ulu','Balikpapan Kota','Kota Balikpapan'],
+  ['76114','Damai','Balikpapan Kota','Kota Balikpapan'],['76115','Gunung Bahagia','Balikpapan Selatan','Kota Balikpapan'],['76116','Sepinggan','Balikpapan Selatan','Kota Balikpapan'],
+  ['76121','Gunung Samarinda','Balikpapan Utara','Kota Balikpapan'],['76123','Muara Rapak','Balikpapan Utara','Kota Balikpapan'],['76131','Margasari','Balikpapan Barat','Kota Balikpapan'],
+  ['76141','Gunung Sari Ilir','Balikpapan Tengah','Kota Balikpapan'],['75111','Pasar Pagi','Samarinda Kota','Kota Samarinda'],['75124','Air Hitam','Samarinda Ulu','Kota Samarinda']
+].map(([v,kel,kec,kab])=>({v,kel,kec,kab,prov:'Kalimantan Timur',d:`${kel} · ${kec} · ${kab} · Kalimantan Timur`}));
+const kpOf=v=>KODEPOS.find(x=>x.v===v);
+const PLACES=[
+  {n:'Jalan Jenderal Sudirman Gang Swadaya',d:'Damai, Balikpapan Kota, Kota Balikpapan, Kalimantan Timur',kp:'76114'},
+  {n:'Jalan Jenderal Sudirman Gang Dolog',d:'Damai, Balikpapan Kota, Kota Balikpapan, Kalimantan Timur',kp:'76114'},
+  {n:'Jalan Jenderal Sudirman Gang Astek',d:'Klandasan Ilir, Balikpapan Kota, Kota Balikpapan, Kalimantan Timur',kp:'76112'},
+  {n:'Jalan Jenderal Sudirman No. 45',d:'Klandasan Ulu, Balikpapan Kota, Kota Balikpapan, Kalimantan Timur',kp:'76113'},
+  {n:'Jalan MT Haryono',d:'Gunung Bahagia, Balikpapan Selatan, Kota Balikpapan, Kalimantan Timur',kp:'76115'},
+  {n:'Jalan Marsma R. Iswahyudi',d:'Sepinggan, Balikpapan Selatan, Kota Balikpapan, Kalimantan Timur',kp:'76116'},
+  {n:'Jalan Ahmad Yani',d:'Gunung Sari Ilir, Balikpapan Tengah, Kota Balikpapan, Kalimantan Timur',kp:'76141'},
+  {n:'Jalan Soekarno Hatta KM 5',d:'Gunung Samarinda, Balikpapan Utara, Kota Balikpapan, Kalimantan Timur',kp:'76121'},
+  {n:'Jalan Mulawarman',d:'Pasar Pagi, Samarinda Kota, Kota Samarinda, Kalimantan Timur',kp:'75111'}
+];
+/* job blocks: k = nasabah, w = wali */
+const JF={k:{job:'pekerjaan',jab:'jabatan',bid:'bidang',addr:'ka',sumber:'sumberDana',gaji:'penghasilan'},
+          w:{job:'pekerjaanWali',jab:'jabatanWali',bid:'bidangWali',addr:'wka',sumber:'sumberDanaWali',gaji:'penghasilanWali'}};
+const jabList=p=>{const j=jobOf(S[JF[p].job]); return j?j.jab.filter(c=>JAB[c]).map(c=>({v:JAB[c],c:String(c)})):[];};
+const bidList=p=>{const j=jobOf(S[JF[p].job]); if(!j) return []; const codes=j.bid===ALL?Object.keys(BID).filter(c=>c!=='9999'):j.bid; return codes.map(c=>({v:BID[c],c}));};
+const OPT={
+  kota:KOTA, gender:LIST.gender, agama:LIST.agama, kawin:LIST.kawin, pendidikan:LIST.pendidikan, tujuan:LIST.tujuan, penghasilan:LIST.penghasilan, sumber:LIST.sumber, transaksi:LIST.transaksi.filter(x=>x.c!=='N0'), tahunTinggal:P([0,1,2,3,4,5,6,7,8,9].map(n=>[String(n),n+' tahun'])), bulanTinggal:P([0,1,2,3,4,5,6,7,8,9,10,11].map(n=>[String(n),n+' bulan'])),
+  pekerjaan:JOBS.map(j=>({v:j.v,c:j.c})), kodepos:KODEPOS, badan:['PT','CV','UD','Koperasi','Yayasan','Firma','Instansi','Perorangan'],
+  hubWali:['Suami','Istri','Ayah','Ibu','Anak','Saudara'],
+  negara:['Singapura','Malaysia','Tiongkok','Jepang','Korea Selatan','Amerika Serikat','Australia','Lainnya'], kekayaan:['Warisan','Hibah','Hasil Investasi','Penjualan Aset','Lainnya'],
+  get jab_k(){return jabList('k')}, get jab_w(){return jabList('w')}, get bid_k(){return bidList('k')}, get bid_w(){return bidList('w')},
+  get penghasilan_w(){return LIST.penghasilan.filter(x=>x.c!=='G0')}, get sumber_k(){return sumberList('k')}, get sumber_w(){return sumberList('w')},
+  get tb_k(){return /Sekolah/.test(jobOf(S.pekerjaan)?.tb||'')?SCHOOLS:COMPANIES}, get tb_w(){return /Sekolah/.test(jobOf(S.pekerjaanWali)?.tb||'')?SCHOOLS:COMPANIES}
+};
+const SUMBER_NW=P([['00099','Orang Tua'],['00099','Investasi']]);
+const SUMBER_PENS=P([['00011','Dana Pensiun']]); /* pensiunan: otomatis dana pensiun (pendapatan rutin) */
+const isPens=p=>jobOf(S[JF[p].job])?.c==='PENS'; /* mengikuti aplikasi referensi; kode SK 00099 Lainnya */
+const isWorking=p=>{const j=jobOf(S[JF[p].job]); return j&&!['PENG','IBRT','MAHA','PELA','PENS'].includes(j.c);};
+const waliNoJob=p=>p==='w'&&G0_JOBS.includes(jobOf(S[JF[p].job])?.c);
+const sumberList=p=>isPens(p)?SUMBER_PENS:waliNoJob(p)?P([['00099','Investasi']]):isWorking(p)?LIST.sumber:(p==='w'?P([['00099','Investasi'],['00099','Lainnya']]):SUMBER_NW);
+const codeOf=(list,v)=>(LIST[list]||[]).concat(list==='sumber'?SUMBER_NW.concat(SUMBER_PENS):[]).find(x=>x.v===v)?.c;
+
+const EXISTING_NIK='6471050101900001'; /* simulasi NIK yang sudah ada di CIF (uji Uniqueness) */
+const isMinor=()=>false; /* pembukaan rekening hanya untuk usia ≥17 */
+const needWali=()=>S.sumberDana==='Orang Tua';
+let S={}, touched=new Set(), cur=0;
+
+/* ---------- rule helpers (Lampiran 2.1 & 4) ---------- */
+const BAD_NAMA=['AYAH','TUAN','NONA','NYONYA','BUNDA','MAMA','PAPA','ABANG','KAKAK','SAUDARA','SAUDARI','ADIK','BAPAK','IBU'];
+const BAD_NAMA_WORDS=['TEST CARD','DUMMY','TEST','PT','CV','P.T','C.V','TBK','PERSERO','ALUMNI','KELOMPOK','SEKOLAH','PAUD','FIRMA','YAYASAN','ARISAN','KEMENTERIAN','USAHA DAGANG','KELOMPOK TANI','KOPERASI','PERKUMPULAN','DIVISI','AND','OR','QQ','CQ','ALMARHUM','ALIAS','JANDA','DUDA','COLTD','INC','PTE','LTD'];
+const BAD_IBU=['DIKNAS','SMA I','KEUANGAN','IBU','KEMENDIKNAS','BUNDA','MAMAH','NN','DIKDAS','BANK','KEMENKES','IBUNDA','IBUNYA','IBUNYA PENGURUS','KEMENPERA','MAMA','PKH','KEMENAG','KEMENSOS','MAMI','NYAI','MENDIKNAS','POLRES','KOSONG','TASPEN','SUAMI','MOTHER','MOMI','IBUK','NY','N/A','TIDAK ADA','BELUM ADA','NYONYA','TNI','MOM','SAYANG','EMPOK','MAMAK','DATA BELUM TERSEDIA','KT','SEKOLAH','ALM','ALMARHUMAH','GURU','MA','TIDAK ADA DATA','TIDAK TERTERA','LAINNYA','SERTIFIKASI GURU','TIDAK TAU','DATA TDK LENGKAP','DATA TIDAK LENGKAP','GA TAU','NAMA IBU KANDUNG','IBU KANDUNG','UNKNOWN','NULL','CLEANSING','NENEK','IBU RUMAH TANGGA','IBU KAMI','IBU KITA','IBU SAYA','BAD DATA','PEMERINTAH','BELUM DIKETAHUI','HJ','TDK ADA','NAMA TIDAK TERDAFTAR','BELUM TAHU','PEDAGANG','COVID','KEMENPORA'];
+const BAD_TGL=['1895-12-16','1900-01-01'];
+const req=(v,l)=>(v===undefined||v===null||v==='')?`${l} wajib dipilih`:'';
+const blank=v=>!(v||'').trim();
+const onlySpecial=v=>/^[^A-Za-z0-9]+$/.test(v.trim());
+const dblSpace=v=>/\s{2,}/.test(v);
+function nameCheck(v,label,kind){ v=v||'';
+  if(blank(v)) return `${label} wajib diisi (tidak boleh kosong/hanya spasi)`;
+  if(dblSpace(v)) return 'Tidak boleh mengandung deretan spasi';
+  if(onlySpecial(v)) return 'Tidak boleh hanya berisi spesial karakter';
+  if(/[^A-Za-z\s.,'\/-]/.test(v)) return `${label} tidak boleh mengandung angka/spesial karakter (selain . , ' - /)`;
+  const U=v.trim().toUpperCase().replace(/\s+/g,' ');
+  if(kind==='nama'){
+    if(BAD_NAMA.includes(U)||/^([A-Z])\1{0,2}$/.test(U)) return `"${v.trim()}" termasuk List Bad Data nama nasabah`;
+    const w=BAD_NAMA_WORDS.find(b=>new RegExp(`(^|[\\s.,])${b.replace('.','\\.')}($|[\\s.,])`).test(U)); if(w) return `Nama tidak boleh mengandung nilai "${w}"`;
+  } else {
+    if(/IBUNYA/.test(U)) return 'Tidak boleh mengandung nilai "IBUNYA"';
+    if(BAD_IBU.includes(U)||/^([A-Z])\1*$/.test(U.replace(/\s/g,''))) return `"${v.trim()}" termasuk List Bad Data nama gadis ibu kandung`;
+    if(/([A-Za-z])\1\1/i.test(v)) return 'Tidak boleh mengandung huruf berulang 3 kali atau lebih';
+    if(/(^|\s)(ibu|bu|ny|nyonya|hj|hajjah|dr|drs|dra|ir|prof|almh|alm)\.?(?=\s|$)/i.test(v)||/,\s*\S/.test(v)) return 'Tulis tanpa sapaan dan gelar (mis. Ibu, Hj., Dr., S.Pd)';
+  }
+  return '';}
+const NAMA_ORANG=['rian','rafi','ratu','budi','andi','agus','dewi','siti','rina','rizky','rizki','putri','putra','dian','eka','adi','ahmad','muhammad','nur','sri','wahyu','yuni','fajar','indah','ayu','bayu','dimas','fitri','hendra','joko','reza','rudi','tono','yanto','yudi','anisa','intan','lestari','sari','tri','dwi'];
+const BADAN_RE=/^(pt|cv|ud|pd|fa|firma|koperasi|yayasan|perum|persero|tbk)\.?\s+/i;
+function workplaceName(v,label,own){ const e=workplace(v,label); if(e) return e;
+  const words=v.trim().replace(BADAN_RE,'').split(/\s+/).filter(Boolean);
+  if(words.length<2) return 'Tidak boleh hanya satu kata. Contoh: PT Makmur Abadi, CV Sentosa Lestari';
+  const ownW=(own||'').toLowerCase().split(/\s+/).filter(w=>w.length>=3);
+  if(words.some(w=>ownW.includes(w.toLowerCase()))) return 'Tidak boleh memakai nama sendiri. Contoh: PT Makmur Abadi, CV Sentosa Lestari';
+  if(words.every(w=>NAMA_ORANG.includes(w.toLowerCase()))) return 'Tidak boleh memakai nama orang. Contoh: PT Makmur Abadi, CV Sentosa Lestari';
+  return ''; }
+function workplace(v,label){ v=v||'';
+  if(blank(v)) return `${label} wajib diisi (tidak boleh kosong/hanya spasi)`;
+  if(dblSpace(v)) return 'Tidak boleh mengandung deretan spasi';
+  if(onlySpecial(v)) return 'Data tidak boleh hanya terisi karakter spesial';
+  if(/[^A-Za-z0-9\s.,'\/-]/.test(v)) return "Hapus spesial karakter (hanya boleh . , ' / -)";
+  const L=v.trim().toLowerCase(); const J=['-','tidak ada','tdk ada','none','na','n/a','null','test','swasta','wiraswasta','karyawan','pegawai','kantor','pt','cv','perusahaan','belum ada','kosong','lainnya','xxx','abc'];
+  if(J.includes(L)||/^(.)\1+$/.test(L.replace(/\s/g,''))) return `"${v.trim()}" bukan nama yang valid. Tulis nama sebenarnya`;
+  if(L.replace(/[^a-z]/g,'').length<3) return `${label} minimal 3 huruf`;
+  return '';}
+function street(v){ v=v||'';
+  if(blank(v)) return 'Alamat wajib diisi (tidak boleh kosong/hanya spasi)';
+  if(dblSpace(v)) return 'Tidak boleh mengandung deretan spasi';
+  if(onlySpecial(v)) return 'Tidak boleh hanya berisi spesial karakter';
+  if(/[^A-Za-z0-9\s.,'\/:()-]/.test(v)) return "Spesial karakter yang boleh hanya . , ' / : ( ) -";
+  if(/\b(lainnya|bank)\b/i.test(v)) return 'Alamat tidak boleh mengandung nilai "Lainnya" atau "BANK"';
+  if(v.trim().length<3) return 'Alamat tidak boleh kurang dari 3 karakter';
+  return '';}
+function dmy(v,l){ v=(v||'').trim(); if(!v) return `${l} wajib diisi (DD/MM/YYYY)`;
+  const m=v.match(/^(\d{2})\/(\d{2})\/(\d{4})$/); if(!m) return 'Format harus DD/MM/YYYY, contoh 15/08/2021';
+  const d=new Date(+m[3],+m[2]-1,+m[1]); if(d.getFullYear()!==+m[3]||d.getMonth()!==+m[2]-1||d.getDate()!==+m[1]) return 'Tanggal tidak valid';
+  if(d>new Date()) return 'Tidak boleh future date';
+  if(S.tglLahir&&d<new Date(S.tglLahir)) return 'Tidak boleh sebelum tanggal lahir'; return ''; }
+const optional=v=>(v&&onlySpecial(v))?'Tidak boleh hanya berisi spesial karakter':'';
+function rtrw(v,l){ v=(v||'').trim(); if(!v) return `${l} wajib diisi`; if(!/^\d+$/.test(v)) return `${l} tidak boleh terisi selain angka`; if(v.length!==3) return `${l} harus 3 digit (contoh 004)`; return '';}
+function nik(v,l='NIK'){ v=(v||'');
+  if(blank(v)) return `${l} wajib diisi`;
+  if(/\s/.test(v)) return `${l} tidak boleh mengandung spasi`;
+  if(/[A-Za-z]/.test(v)) return `${l} (KTP) tidak boleh mengandung huruf`;
+  if(/[^0-9]/.test(v)) return `${l} tidak boleh mengandung spesial karakter`;
+  if(v[0]==='0') return `${l} (KTP) tidak boleh diawali angka 0`;
+  if(v.length!==16) return `${l} (KTP) wajib 16 digit angka (sekarang ${v.length})`;
+  let run=1; for(let i=1;i<v.length;i++){ run=(+v[i]===+v[i-1]+1)?run+1:1; if(run>=6) return `${l} tidak valid: angka berurutan (mis. 123456)`; }
+  if(/(\d)\1{6,}/.test(v)) return `${l} tidak valid: angka berulang 7 digit atau lebih`;
+  if(/(\d\d)\1{4,}/.test(v)) return `${l} tidak valid: pola 2 digit berulang 5 kali atau lebih`;
+  return '';}
+function ageOf(d){if(!d) return null; const b=new Date(d),n=new Date(); let a=n.getFullYear()-b.getFullYear(); const m=n.getMonth()-b.getMonth(); if(m<0||(m===0&&n.getDate()<b.getDate())) a--; return a;}
+function dob(v,minor){ if(!v) return 'Tanggal lahir wajib diisi';
+  if(BAD_TGL.includes(v)) return 'Tanggal lahir termasuk List Bad Data (16-12-1895 / 01-01-1900)';
+  if(new Date(v)>new Date()) return 'Tanggal lahir tidak boleh setelah tanggal pembukaan CIF (future date)';
+  const a=ageOf(v); if(a>110) return 'Tanggal lahir tidak valid';
+  if(minor===undefined) return a<17?'Wali harus berusia minimal 17 tahun':'';
+  if(!minor&&a<17) return 'Pembukaan rekening hanya untuk usia 17 tahun ke atas';
+  if(minor&&a>=17) return 'Usia sudah 17 tahun atau lebih'; if(minor&&a<10) return 'Usia minimal 10 tahun'; return '';}
+function jobConsistency(p){ const j=jobOf(S[JF[p].job]); if(!j) return ''; const a=ageOf(p==='k'?S.tglLahir:S.tglLahirWali), g=p==='k'?S.gender:S.genderWali;
+  if(j.c==='PELA'&&a>30) return 'Pekerjaan "Pelajar" tidak mungkin untuk usia lebih dari 30 tahun';
+  if(j.c==='IBRT'&&g==='Laki-laki') return 'Pekerjaan "Ibu Rumah Tangga" tidak mungkin untuk jenis kelamin laki-laki (M)';
+  if(j.c==='PENS'&&a!==null&&a<16) return 'Pekerjaan "Pensiunan" tidak mungkin untuk usia di bawah 16 tahun';
+  if(a!==null&&a<15&&!['PELA','PENG'].includes(j.c)) return 'Usia di bawah 15 tahun tidak boleh terisi pekerja/pengajar/mahasiswa/wiraswasta';
+  return '';}
+function company(p){ const j=jobOf(S[JF[p].job]); const lbl=j?.tb||'Nama tempat bekerja';
+  return S[p+'Lain'] ? workplaceName(S[p+'NamaUsaha'],lbl.split('/')[0],p==='w'?S.namaWali:S.nama) : req(S[p+'Perusahaan'],lbl.split('/')[0]); }
+const needBadan=p=>{const tb=jobOf(S[JF[p].job])?.tb||''; return /Perusahaan|Usaha/.test(tb)&&!/Sekolah/.test(tb);};
+
+const V={
+  usia:v=>req(v,'Kategori usia'),
+  nasabah:v=>req(v,'Pilihan'),
+  nik:v=>{const e=nik(v); if(e) return e; if(S.nasabah==='tidak'&&v===EXISTING_NIK) return 'NIK sudah terdaftar di CIF bank (tidak boleh duplikat dengan CIF lain). Ubah pilihan menjadi nasabah bank ini'; return '';}, nama:v=>nameCheck(v,'Nama sesuai identitas','nama'), tempatLahir:v=>req(v,'Tempat lahir'), tglLahir:v=>dob(v,isMinor()),
+  gender:v=>req(v,'Jenis kelamin'), agama:v=>req(v,'Agama'), pendidikan:v=>req(v,'Pendidikan terakhir'),
+  kawin:v=>{const e=req(v,'Status perkawinan'); if(e) return e; if(S.gender==='Laki-laki'&&v==='Janda') return 'Untuk jenis kelamin M, status perkawinan tidak boleh Janda (J)'; if(S.gender==='Perempuan'&&v==='Duda') return 'Untuk jenis kelamin F, status perkawinan tidak boleh Duda (D)'; return '';},
+  ibu:v=>{const e=nameCheck(v,'Nama gadis ibu kandung','ibu'); if(e) return e; if(S.nama&&v.trim().toLowerCase()===S.nama.trim().toLowerCase()) return 'Nama ibu kandung tidak boleh sama dengan nama nasabah'; return '';},
+  pekerjaan:v=>req(v,'Pekerjaan')||jobConsistency('k'), jabatan:v=>req(v,'Jabatan'), bidang:v=>req(v,'Bidang pekerjaan'),
+  sumberDana:v=>req(v,'Sumber penghasilan'), penghasilan:v=>req(v,'Penghasilan perbulan'), transaksi:v=>req(v,'Transaksi harian'), tujuan:v=>req(v,'Tujuan pembukaan rekening'),
+  kPerusahaan:()=>company('k'), kBadan:v=>req(v,'Jenis badan usaha'),
+  hubWali:v=>req(v,'Hubungan dengan wali'),
+  nikWali:v=>{const e=nik(v,'NIK wali'); if(e) return e; if(S.nik&&v===S.nik) return 'NIK wali tidak boleh sama dengan NIK nasabah'; return '';},
+  namaWali:v=>nameCheck(v,'Nama lengkap wali','nama'), tempatLahirWali:v=>req(v,'Tempat lahir wali'), tglLahirWali:v=>dob(v), genderWali:v=>req(v,'Jenis kelamin wali'),
+  kawinWali:v=>{const e=req(v,'Status perkawinan wali'); if(e) return e; if(S.genderWali==='Laki-laki'&&v==='Janda') return 'Untuk jenis kelamin M, status tidak boleh Janda (J)'; if(S.genderWali==='Perempuan'&&v==='Duda') return 'Untuk jenis kelamin F, status tidak boleh Duda (D)'; return '';},
+  pekerjaanWali:v=>req(v,'Pekerjaan wali')||jobConsistency('w'), jabatanWali:v=>req(v,'Jabatan wali'), bidangWali:v=>req(v,'Bidang pekerjaan wali'), wPerusahaan:()=>company('w'), wBadan:v=>req(v,'Jenis badan usaha'), sumberDanaWali:v=>req(v,'Sumber penghasilan wali'), penghasilanWali:v=>req(v,'Penghasilan wali'),
+  sejakTahun:v=>req(v,'Tahun'), sejakBulan:v=>req(v,'Bulan'),
+  rekLain:v=>req(v,'Jawaban'), bankLain:v=>workplace(v,'Nama bank/institusi'), waktuBank:v=>dmy(v,'Waktu dikeluarkan'),
+  bisnisLN:v=>req(v,'Jawaban'), negara:v=>req(v,'Negara'), kayaLain:v=>req(v,'Jawaban'), sumberKaya:v=>req(v,'Sumber kekayaan'),
+  c1:v=>v?'':'Persetujuan ini wajib', c2:v=>v?'':'Pernyataan ini wajib', c3:v=>v?'':'Pernyataan ini wajib'
+};
+['ktp','dom','ka','wa','wka'].forEach(p=>{ V[p+'Alamat']=street; V[p+'Detail']=optional; V[p+'RT']=v=>rtrw(v,'RT'); V[p+'RW']=v=>rtrw(v,'RW'); V[p+'KodePos']=v=>{const e=req(v,'Kode pos'); if(e) return e; if(v==='99999') return 'Kode pos tidak boleh 99999'; return '';}; });
+const addrKeys=p=>[p+'Alamat',p+'Detail',p+'RT',p+'RW',p+'KodePos'];
+const compKeys=p=>S[p+'Lain']?[p+'Perusahaan',p+'Badan'].filter(k=>!k.endsWith('Badan')||needBadan(p)):[p+'Perusahaan'];
+
+/* auto-fill per Mapping Parameter Informasi Pekerjaan */
+function normalizeJob(p){ const f=JF[p], j=jobOf(S[f.job]); if(!j) return;
+  const jl=jabList(p); if(jl.length===1) S[f.jab]=jl[0].v; else if(S[f.jab]&&!jl.some(x=>x.v===S[f.jab])) delete S[f.jab];
+  const bl=bidList(p); if(bl.length===1) S[f.bid]=bl[0].v; else if(S[f.bid]&&!bl.some(x=>x.v===S[f.bid])) delete S[f.bid];
+  if(S[f.sumber]&&!sumberList(p).some(x=>x.v===S[f.sumber])) delete S[f.sumber];
+  if(p==='k'&&G0_JOBS.includes(j.c)) S[f.gaji]='Tidak Memiliki Penghasilan';
+  if(j.c==='PENS') S[f.sumber]='Dana Pensiun';
+  if(waliNoJob(p)) S[f.sumber]='Investasi';
+  if(p==='w'&&S[f.gaji]==='Tidak Memiliki Penghasilan') delete S[f.gaji];
+  if(NA_JOBS.includes(j.c)){ S[p+'Lain']=false; S[p+'Perusahaan']='N/A'; const src=(p==='k'&&!S.domSame)?'dom':(p==='k'?'ktp':'wa'); ['Alamat','Detail','RT','RW','KodePos','Prov'].forEach(x=>S[f.addr+x]=S[src+x]); }
+  else if(S[p+'Perusahaan']==='N/A') delete S[p+'Perusahaan'];
+}
+function jobKeys(p){ const f=JF[p], j=jobOf(S[f.job]); const k=[f.job]; if(!j) return k;
+  if(jabList(p).length>1) k.push(f.jab);
+  if(!NA_JOBS.includes(j.c)) k.push(...compKeys(p),...addrKeys(f.addr));
+  if(bidList(p).length>1) k.push(f.bid);
+  k.push(f.sumber); if(p==='w'||!G0_JOBS.includes(j.c)) k.push(f.gaji);
+  return k; }
+
+/* ---------- screens: same order as aplikasi referensi ---------- */
+const SCREENS=[
+ {id:'usia',title:'Buka Rekening',label:'Pilih kategori',keys:()=>['usia'],render:()=>`
+  <div class="card"><p class="qh">Nah sekarang pilih ini ya</p><p class="sub">Alur menyesuaikan usia kamu.</p>
+   ${choice('usia','adult','17+','Saya berusia ≥ 17 tahun','Untuk Warga Negara Indonesia yang berusia ≥ 17 tahun.')}
+   ${choice('usia','minor','<17','Saya berusia di bawah 17 tahun','Untuk Warga Negara Indonesia berusia mulai dari 10 hingga 17 tahun.')}
+   <div class="err" data-err="usia"></div></div>`,btn:'Lanjut',
+  notes:[['blu','Referensi layar 1: dua kartu pilihan usia. Kategori menentukan apakah data wali diminta.']]},
+
+ {id:'ektp',title:'Data e-KTP',label:'Data sesuai e-KTP',keys:()=>S.scanned?['nik','nama','tempatLahir','tglLahir','gender','agama','kawin',...addrKeys('ktp'),'pendidikan','ibu']:['__scan'],render:()=>!S.scanned?`
+  <div class="card"><p class="qh">Foto e-KTP kamu</p><p class="sub">Data e-KTP dibaca otomatis, kamu tinggal memastikan.</p>
+   <div class="scan">${ktpFrame()}${S.scanning?'<div class="scanline"></div>':''}</div>${camNote('ktp')}
+   <p class="hint" style="text-align:center">${S.scanning?'Membaca e-KTP dan mencocokkan NIK ke CIF bank…':'NIK dari e-KTP dipakai untuk mengecek apakah kamu sudah punya rekening di bank ini.'}</p></div>`:`
+  ${cifBanner()}<div class="card"><p class="qh">Pastikan semua data kamu sesuai e-KTP</p><p class="sub"><span class="badge ok">✓ Terbaca otomatis</span> Perbaiki bila ada yang salah baca.</p>
+   ${input('nik','NIK','16 digit NIK',{inputmode:'numeric',maxlength:16})}
+   ${input('nama','Nama Lengkap','Sesuai e-KTP')}
+   ${picker('tempatLahir','Tempat Lahir','Pilih kota/kabupaten','kota')}
+   ${input('tglLahir','Tanggal Lahir','',{type:'date'})}
+   ${radio('gender','Jenis Kelamin',LIST.gender.map(x=>x.v))}
+   ${picker('agama','Agama','Pilih agama','agama')}
+   ${picker('kawin','Status Perkawinan','Pilih status perkawinan','kawin')}
+   <p class="sub2">Alamat sesuai e-KTP</p>
+   ${addr('ktp')}
+   <p class="sub2">Data pelengkap</p>
+   ${picker('pendidikan','Pendidikan Terakhir','Pilih pendidikan','pendidikan')}
+   ${input('ibu','Nama Gadis Ibu Kandung','Masukkan nama ibu kandung',{hint:'Sesuai KTP, tanpa sapaan dan gelar'})}
+  </div>`,btn:()=>S.scanned?'Lanjut':'Ambil Foto e-KTP',
+  notes:[['blu','Referensi layar 2: data e-KTP dibaca otomatis lalu dikonfirmasi.'],['sk','Hasil baca NIK langsung dicek ke CIF: rekening ditemukan → data ditarik; belum ada → nasabah baru; pilih "bukan nasabah" padahal NIK ada → ditolak (Uniqueness).'],
+   ['sk','NIK (2.1 no. 4): 16 digit angka, tidak diawali 0, tanpa huruf/spasi. Bila belum ada validasi Dukcapil: tolak angka berurutan (123456), berulang 7 digit, atau pola 2 digit berulang 5 kali. Coba 1234567890123456.'],
+   ['sk','Nama (no. 1) dan Nama Gadis Ibu Kandung (no. 9): tolak List Bad Data (mis. IBU, MAMA, IBUNYA, TIDAK TAU), kata seperti PT/CV/TEST/DUMMY pada nama, deretan spasi, dan huruf berulang 3x pada nama ibu.'],
+   ['sk','Tanggal lahir (no. 11): tidak boleh future date atau 16-12-1895 / 01-01-1900. Status perkawinan (no. 8): laki-laki tidak boleh Janda, perempuan tidak boleh Duda.'],
+   ['sk','Agama, Status Perkawinan, Pendidikan Terakhir memakai list parameter 3.9, 3.11, 3.12 (kode B/K/D/J, XX–S3, ISL dst).']]},
+
+ {id:'nasabah',title:'Buka Rekening',label:'Status nasabah',keys:()=>['nasabah'],render:()=>`
+  <div class="card"><p class="qh">Apakah kamu nasabah bank ini?</p><p class="sub">Kalau bukan, kamu tetap bisa daftar sebagai nasabah baru.</p>
+   ${choice('nasabah','ya','✓','Ya, saya nasabah bank ini','Siapkan kartu debit dan no. HP yang terdaftar. Data alamat dan pekerjaan ditarik dari data bank.')}
+   ${choice('nasabah','tidak','+','Saya bukan nasabah bank ini','Ikuti semua proses berikutnya, simpel kok! Pastikan koneksi internet stabil.')}
+   <div class="err" data-err="nasabah"></div></div>`,btn:'Lanjut',
+  notes:[['blu','Halaman pertama (Referensi layar 3): nasabah lama menarik data alamat dan pekerjaan yang sudah ada.'],['sk','Setelah ini foto e-KTP: NIK dicocokkan ke CIF. Nomor Identitas tidak boleh duplikat dengan CIF lain (2.1 no. 4), jadi CIF ganda dicegah sejak awal. Coba pilih "bukan nasabah", lalu ubah NIK menjadi 6471050101900001.']]},
+
+ {id:'domisili',title:'Alamat Domisili',label:'Alamat domisili',keys:()=>S.domSame?[]:addrKeys('dom'),render:()=>`
+  <div class="card"><p class="qh">Masukkan Alamat Domisili</p>
+   <label class="chk" style="margin:10px 0 ${S.domSame?0:18}px"><input type="checkbox" data-check="domSame" ${S.domSame?'checked':''}> Alamat domisili sama dengan e-KTP</label>
+   ${S.domSame?'':addr('dom')}</div>`,btn:'Lanjut',
+  notes:[['blu','Referensi layar 4: "sama dengan e-KTP" menyembunyikan isian; tombol cari membuka "Cari Lokasi".'],
+   ['sk','Alamat (2.1 no. 18/27): spesial karakter hanya . , \' / : ( ) -, tidak boleh "Lainnya"/"BANK", minimal 3 karakter, tanpa deretan spasi.'],
+   ['sk','RT/RW (no. 19–20/28–29): hanya angka, wajib 3 digit (1 → 001). 000 diterima untuk alamat yang tidak memiliki RT/RW.'],
+   ['sk','Kode pos (no. 21/30) dari list kode pos sistem, tidak boleh 99999. Provinsi, kab/kota, kecamatan, kelurahan autofill dari kode pos (no. 22–25).']]},
+
+ {id:'pekerjaan',title:'Data Pekerjaan',label:'Pekerjaan',keys:()=>jobKeys('k').concat(S.pekerjaan?['transaksi','tujuan']:[]),render:()=>`
+  <div class="card"><p class="qh">Apa Pekerjaanmu?</p>${jobBlock('k')}
+   ${S.pekerjaan?`${picker('transaksi','Transaksi Normal Harian','Pilih transaksi harian','transaksi')}${picker('tujuan','Tujuan Pembukaan Rekening','Pilih tujuan','tujuan')}`:''}
+  </div>`,btn:'Lanjut',
+  notes:[['blu','Referensi layar 5–6: pilih pekerjaan dulu, field lanjutan menyesuaikan.'],
+   ['sk','Pekerjaan, Jabatan, Bidang Pekerjaan mengikuti Mapping Parameter Informasi Pekerjaan (3.2): pilihan jabatan & bidang otomatis disaring sesuai kode pekerjaan.'],
+   ['sk','Label Nama Tempat Bekerja mengikuti kolom "Tempat Bekerja" di 3.2: Pelajar/Mahasiswa → Nama Sekolah/Universitas, Pensiunan → Nama Perusahaan Terakhir, Wiraswasta → Nama Tempat Usaha. Hanya PENG & IBRT yang N/A.'],
+   ['sk','Nama Tempat Bekerja (2.1 no. 38): tidak kosong/deretan spasi, tidak hanya spesial karakter, spesial hanya . , \' / -. Usulan BPIP menambah pilihan dari daftar + tolak isian umum ("-", "swasta", "PT"). Menyasar 63.682 CIF (92%).'],
+   ['sk','Alamat Tempat Bekerja (no. 40) mandatory; untuk IBRT/PENG otomatis = alamat domisili.'],
+   ['blu','Tidak bekerja (Pelajar, Mahasiswa, Penganggur, IRT, Pensiunan): sumber penghasilan Orang Tua atau Investasi. Bila Orang Tua → muncul 4 layar data wali seperti aplikasi referensi.'],['sk','Penghasilan (no. 13): PENG/MAHA/PELA/IBRT otomatis G0. Konsistensi no. 35: Pelajar ≤30 th, IRT bukan laki-laki, Pensiunan ≥16 th, usia <15 hanya Pelajar/Penganggur.']]},
+
+ {id:'wali',title:'Data Wali',label:'Data wali',when:needWali,keys:()=>['hubWali','nikWali','namaWali'],render:()=>`
+  <div class="card"><p class="qh">Yuk, isi data walimu</p>
+   ${picker('hubWali','Hubungan dengan Wali','Pilih hubungan','hubWali')}
+   ${input('nikWali','NIK Wali','16 digit NIK wali',{inputmode:'numeric',maxlength:16})}
+   ${input('namaWali','Nama Lengkap Wali (sesuai e-KTP)','Nama lengkap wali')}</div>`,btn:'Lanjut',
+  notes:[['blu','Referensi layar 7: muncul karena sumber penghasilan = Orang Tua.'],['sk','NIK & nama wali memakai rule yang sama dengan nasabah (2.1 no. 1 & 4).']]},
+
+ {id:'wali2',title:'Data Wali',label:'Data diri wali',when:needWali,keys:()=>['tempatLahirWali','tglLahirWali','genderWali','kawinWali'],render:()=>`
+  <div class="card"><p class="qh">Lengkapi data wali dulu ya</p>
+   ${picker('tempatLahirWali','Tempat Lahir Wali','Pilih kota/kabupaten','kota')}
+   ${input('tglLahirWali','Tanggal Lahir Wali','',{type:'date'})}
+   ${picker('genderWali','Jenis Kelamin Wali','Pilih jenis kelamin','gender')}
+   ${picker('kawinWali','Status Perkawinan Wali','Pilih status','kawin')}</div>`,btn:'Lanjut',
+  notes:[['blu','Referensi layar 8.'],['sk','Tempat lahir dari daftar, bukan isian bebas (di aplikasi referensi bisa diisi "Africa"). Konsistensi jenis kelamin ↔ status perkawinan berlaku juga untuk wali.']]},
+
+ {id:'wali3',title:'Data Wali',label:'Alamat wali',when:needWali,keys:()=>addrKeys('wa'),render:()=>`
+  <div class="card"><p class="qh">Alamat wali sesuai KTP</p>${addr('wa')}</div>`,btn:'Lanjut',
+  notes:[['blu','Referensi layar 9.'],['sk','Rule alamat, RT/RW, kode pos sama dengan nasabah.']]},
+
+ {id:'wali4',title:'Data Wali',label:'Pekerjaan wali',when:needWali,keys:()=>jobKeys('w'),render:()=>`
+  <div class="card"><p class="qh">Pekerjaan walimu</p>${jobBlock('w')}</div>`,btn:'Lanjut',
+  notes:[['blu','Referensi layar 10–11.'],['sk','Pekerjaan wali memakai mapping 3.2 yang sama dengan nasabah.']]},
+
+ {id:'ringkasan',title:'Ringkasan Data',label:'Periksa data',keys:()=>[],render:renderSummary,btn:'Lanjut',
+  notes:[['blu','Referensi layar 12: ringkasan per bagian dengan ikon ubah.'],['dq','Pilar 02: Data Quality Gate memakai dimensi Buku 11 (Completeness, Validity, Accuracy, Consistency, Uniqueness).'],['dq','Pilar 01 Field Alignment: setiap isian dipetakan ke kode parameter CIF/MDM (Lampiran 3).']]},
+
+ {id:'tambahan',title:'Data Tambahan',label:'Data tambahan',keys:()=>{const k=['sejakTahun','sejakBulan','rekLain']; if(S.rekLain==='Ya') k.push('bankLain','waktuBank'); k.push('bisnisLN'); if(S.bisnisLN==='Ya') k.push('negara'); k.push('kayaLain'); if(S.kayaLain==='Ya') k.push('sumberKaya'); return k;},render:()=>`
+  <div class="card"><p class="qh">Isi data tambahan ini ya…</p>
+   <div class="f" style="margin-bottom:0"><span class="lbl">Sudah berapa lama kamu tinggal di alamat domisili saat ini?<span class="req">*</span></span></div>
+   <div class="dur">${picker('sejakTahun','Tahun','Pilih tahun','tahunTinggal')}${picker('sejakBulan','Bulan','Pilih bulan','bulanTinggal')}</div>
+   ${radio('rekLain','Apakah kamu memiliki kartu kredit / rekening dari bank / institusi lain?',['Ya','Tidak'])}
+   ${S.rekLain==='Ya'?input('bankLain','Nama Bank/Institusi Penyedia','Mis. Bank Mandiri')+input('waktuBank','Waktu Dikeluarkan','DD/MM/YYYY',{inputmode:'numeric',maxlength:10,mask:'dmy',hint:'Format tanggal/bulan/tahun, contoh 15/08/2021'}):''}
+   ${radio('bisnisLN','Apakah kamu memiliki hubungan bisnis di luar negeri?',['Ya','Tidak'])}
+   ${S.bisnisLN==='Ya'?picker('negara','Negara Hubungan Bisnis','Pilih negara','negara'):''}
+   ${radio('kayaLain','Apakah kamu memiliki sumber kekayaan tambahan?',['Ya','Tidak'])}
+   ${S.kayaLain==='Ya'?picker('sumberKaya','Sumber Kekayaan Tambahan','Pilih sumber','kekayaan'):''}</div>`,btn:'Lanjut',
+  notes:[['blu','Referensi layar 13: pertanyaan ya/tidak dengan isian lanjutan bila "Ya".'],['dq','Isian lanjutan wajib bila menjawab "Ya". Waktu dikeluarkan ditulis lengkap DD/MM/YYYY (bukan bulan saja), tidak boleh future date. Lama tinggal dipilih dalam tahun (0–9) dan bulan (0–11).']]},
+
+ {id:'riplay',title:'RIPLAY',label:'Info produk',keys:()=>[],render:()=>{ if(!S.riplayAt) S.riplayAt=new Date().toISOString(); return `
+  <div class="pdfbar"><span>RIPLAY_TABUNGAN_UMUM.pdf</span><span>Versi umum</span></div><div class="rdoc"><div class="rhead"><b>RIPLAY</b><span>Ringkasan Informasi Produk dan/atau Layanan</span></div>
+    <div class="rbar">RIPLAY VERSI UMUM – TABUNGAN UMUM</div>
+    <table class="rt"><tr><td>Nama Penerbit</td><td>Bank (contoh)</td></tr><tr><td>Nama Produk</td><td>Tabungan Umum</td></tr><tr><td>Jenis Produk</td><td>Tabungan</td></tr><tr><td>Mata Uang</td><td>IDR</td></tr><tr><td>Deskripsi</td><td>Tabungan untuk nasabah yang menginginkan kemudahan bertransaksi</td></tr></table>
+    <div class="rbar">FITUR UTAMA</div>
+    <table class="rt"><tr><td>Setoran Awal</td><td>Rp250.000</td></tr><tr><td>Saldo Minimum</td><td>Rp50.000</td></tr><tr><td>Limit Tarik Tunai</td><td>Rp10.000.000</td></tr><tr><td>Limit Transfer Antar Bank</td><td>Rp10.000.000 – Rp250.000.000</td></tr></table>
+    <div class="rbar">BIAYA</div>
+    <table class="rt"><tr><td>Administrasi Bulanan</td><td>Rp12.000</td></tr><tr><td>Penarikan di Teller</td><td>Rp10.000 (≤Rp5.000.000)</td></tr><tr><td>Kartu Silver / Black</td><td>Rp3.500 / Rp6.500</td></tr><tr><td>Tutup Rekening</td><td>Rp50.000</td></tr><tr><td>Ganti Buku Rusak</td><td>Rp25.000</td></tr></table>
+    <div class="rbar">MANFAAT</div><ol class="rl"><li>Asuransi kecelakaan hingga 250% dari saldo, maks. Rp150 juta</li><li>Transfer real-time antar bank</li><li>Akses melalui beragam channel</li><li>Kartu dapat digunakan di seluruh dunia</li></ol>
+    <div class="rbar">RISIKO</div><p class="rp">Simpanan yang dijamin LPS hanya hingga 2 miliar rupiah per nasabah.</p>
+    <div class="rbar">PERSYARATAN</div><ul class="rl"><li>Dokumen: KTP; NPWP; Paspor; KIM/KITAS/KITAP</li><li>Setoran awal minimum Rp250.000, setoran berikutnya Rp10.000</li><li>Saldo mengendap minimal Rp50.000</li></ul>
+    <div class="rbar">DISCLAIMER</div><ol class="rl"><li>Bank dapat menolak permohonan bila tidak memenuhi persyaratan.</li><li>Nasabah wajib membaca RIPLAY ini sebelum menyetujui.</li></ol>
+    <p class="rp" style="color:var(--muted)">Isi mengikuti struktur RIPLAY versi umum; angka hanya ilustrasi untuk prototipe.</p></div>
+  <p class="hint" style="text-align:center">Baca seluruh dokumen sebelum melanjutkan ke persetujuan.</p>`;},btn:'Saya Sudah Membaca',
+  notes:[['blu','Referensi layar 14: dokumen RIPLAY ditampilkan sebagai PDF sebelum persetujuan.'],['dq','RIPLAY wajib dibaca sebelum persetujuan; waktu penyampaian RIPLAY dicatat dan ditampilkan di layar berikutnya.']]},
+
+ {id:'setuju',title:'Persetujuan',label:'Persetujuan',keys:()=>['c1','c2'].concat(needWali()?['c3']:[]),render:()=>{ const t=new Date(S.riplayAt||Date.now()), dd=t.toLocaleDateString('en-GB'), hm=t.toTimeString().slice(0,5);
+  return `<div class="card"><p class="consent-intro">Bank telah menyampaikan Ringkasan Informasi Produk dan Layanan Versi Personal kepada Sdr. <b>${esc((S.nama||'').toUpperCase())}</b> untuk produk Tabungan Umum pada tanggal ${dd} pukul ${hm} WIB</p>
+   <p style="font-weight:800;color:var(--muted);margin:0 0 14px">Tanggal Cetak Dokumen: ${t.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</p>
+   ${chk('c1','Saya telah membaca, memahami, dan memberikan persetujuan kepada Bank untuk memproses data pribadi saya dan/atau memberikan data pribadi saya kepada pihak yang bekerja sama dengan Bank terkait penggunaan Tabungan Umum dan/atau produk dan/atau layanan Bank lainnya sesuai dengan Syarat dan Ketentuan, beserta <button type="button" class="lnk" data-goto="riplay">Ringkasan Informasi Produk dan Layanan Versi Personal</button> yang berlaku.',true)}
+   ${chk('c2','Saya adalah WNI dan tidak memiliki kewajiban perpajakan di negara lain.',true)}
+   ${needWali()?chk('c3','Saya telah memberikan <button type="button" class="lnk" data-goto="wali">Pernyataan Konfirmasi - Kebenaran Identitas Wali dan Sumber Dana</button>',true):''}
+   ${chk('c4','(Opsional) Saya memberikan persetujuan kepada Bank untuk menggunakan data Saya bersama pihak yang bekerjasama dengan Bank untuk kebutuhan penawaran produk/layanan, dan/atau personalisasi promosi atau tujuan komersial lainnya.',false)}</div>`;},btn:'Lanjut',
+  notes:[['blu','Referensi layar 15: persetujuan wajib dan opsional dipisah, dengan tautan ke RIPLAY dan pernyataan wali.'],['sk','Pernyataan WNI tanpa kewajiban pajak luar negeri mendukung konsistensi Kode Pajak (2.1 no. 50: WNI tidak boleh kode 2).']]},
+
+ {id:'vcall',title:'Verifikasi',label:'Langkah terakhir',keys:()=>[],render:()=>`
+  <div class="card vc"><div class="av"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.8"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3z"/></svg></div>
+   <p class="qh">Langkah terakhir nih!</p><p class="sub">Video call dengan petugas bank untuk meneruskan pembukaan rekening.</p>
+   <p style="font-weight:800;font-size:14px;margin:0">Waktu operasional: setiap hari pukul 06.00–22.00 WIB</p>
+   <div class="prep">Pastikan kamu:<ul><li>Menyiapkan e-KTP${isMinor()?' dan e-KTP wali':''}</li><li>Berpakaian sopan</li><li>Punya koneksi internet yang lancar</li></ul></div></div>`,
+  btn:'Hubungi Sekarang',second:'Nanti Saja',
+  notes:[['blu','Referensi layar 16: video call sebagai verifikasi terakhir.'],['dq','Petugas melihat hasil Data Quality Gate (dual control, Buku 11). Data yang gagal uji diperbaiki di front-end pada kesempatan pertama atau masuk Exception Queue (Pilar 03).']]},
+
+ {id:'wajah',title:'Verifikasi Wajah',label:'Verifikasi wajah',keys:()=>S.faceOk?[]:['__face'],render:()=>`
+  <div class="card vc"><p class="qh">Verifikasi wajah</p><p class="sub">Langkah terakhir. Wajahmu dicocokkan dengan foto e-KTP.</p>
+   <div class="face ${S.faceScanning?'scanning':''} ${S.faceOk?'ok':''}"><svg width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="${S.faceOk?'var(--ok)':'var(--brand)'}" stroke-width="1.2"><circle cx="12" cy="9" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>${faceFrame()}${S.faceOk?'<span class="facetick">✓</span>':''}</div>
+   <p style="font-weight:800;margin:0 0 4px">${S.faceOk?'Wajah cocok dengan e-KTP':S.faceScanning?'Memindai wajah… kedipkan mata':'Posisikan wajah di dalam lingkaran'}</p>${S.faceOk||S.faceScanning?'':camNote('face')}
+   ${S.faceOk?'':'<div class="prep">Pastikan kamu:<ul><li>Berada di tempat dengan cahaya cukup</li><li>Melepas masker, kacamata, dan topi</li><li>Hanya ada satu wajah di kamera</li></ul></div>'}</div>`,
+  btn:()=>S.faceOk?'Buka Rekening':'Mulai Verifikasi Wajah',
+  notes:[['dq','Verifikasi wajah (liveness + face match ke foto e-KTP) memastikan pemilik data = pemohon, sebagai langkah akhir sebelum CIF dibentuk.'],['dq','Data yang masih gagal uji tidak sampai ke tahap ini: sudah diperbaiki di front-end, atau masuk Exception Queue (Pilar 03).']]},
+
+ {id:'selesai',title:'Rekening Dibuka',label:'Selesai',keys:()=>[],hideBack:true,render:()=>`
+  <div class="card done"><div class="tick"></div><h2>Rekening berhasil dibuka</h2>
+   <p>Data kamu lolos Data Quality Gate dan tercatat di CIF tanpa perlu dikoreksi CS.</p>
+   <div class="acct">0123 01 045678 50 9</div><p style="margin-top:14px"><span class="badge ok">✓ 0 exception</span></p></div>`,btn:'Mulai Lagi',
+  notes:[['dq','Hasil akhir: CIF terbentuk lengkap dan valid, tidak masuk antrean pengkinian data CS.']]}
+];
+/* ---------- kamera: live preview bila browser mengizinkan, selain itu kamera bawaan ponsel / pilih foto ---------- */
+const CAM={stream:null,state:'idle',for:null};
+function startFace(){ stopCam(); S.faceScanning=true; render(false); setTimeout(()=>{S.faceScanning=false; S.faceOk=true; render(false); toast('Verifikasi wajah berhasil');},1600); }
+function startKtp(){ stopCam(); S.scanning=true; render(false); setTimeout(()=>{S.scanning=false; S.scanned=true; scanFill(); render(false);},1300); }
+function camWanted(){ const s=flow()[cur]; if(!s) return null;
+  if(s.id==='ektp'&&!S.scanned&&!S.scanning&&!S.ktpPhoto) return 'environment';
+  if(s.id==='wajah'&&!S.faceOk&&!S.faceScanning&&!S.facePhoto) return 'user'; return null; }
+function stopCam(){ if(CAM.stream) CAM.stream.getTracks().forEach(t=>t.stop()); CAM.stream=null; CAM.state='idle'; CAM.for=null; }
+function attachCam(){ const v=$('camv'); if(v&&CAM.stream&&v.srcObject!==CAM.stream){ v.srcObject=CAM.stream; v.play().catch(()=>{}); } }
+function syncCam(){ const want=camWanted();
+  if(!want){ if(CAM.state!=='blocked') stopCam(); return; }
+  if(CAM.for===want&&CAM.state!=='idle'){ attachCam(); return; }
+  if(CAM.state==='blocked'){ return; }
+  stopCam(); CAM.for=want;
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ CAM.state='blocked'; render(false); return; }
+  CAM.state='starting';
+  navigator.mediaDevices.getUserMedia({video:{facingMode:want,width:{ideal:1280}},audio:false}).then(st=>{
+    if(CAM.for!==want||camWanted()!==want){ st.getTracks().forEach(t=>t.stop()); if(CAM.for===want) CAM.state='idle'; return; }
+    CAM.stream=st; CAM.state='live'; render(false);
+  }).catch(()=>{ if(CAM.for===want){ CAM.state='blocked'; render(false); } }); }
+function grab(mirror){ const v=$('camv'); const c=document.createElement('canvas'); c.width=v.videoWidth||640; c.height=v.videoHeight||480;
+  const x=c.getContext('2d'); if(mirror){ x.translate(c.width,0); x.scale(-1,1); } x.drawImage(v,0,0,c.width,c.height); return c.toDataURL('image/jpeg',.85); }
+function ktpFrame(){ if(S.ktpPhoto) return `<img class="shot" src="${S.ktpPhoto}" alt="Foto e-KTP">`;
+  if(CAM.for==='environment'&&(CAM.state==='live'||CAM.state==='starting')) return '<video id="camv" playsinline muted autoplay></video><div class="guide"></div>';
+  return '<div class="ktp"></div>'; }
+function faceFrame(){ if(S.facePhoto) return `<img class="shot" src="${S.facePhoto}" alt="Foto wajah">`;
+  if(CAM.for==='user'&&(CAM.state==='live'||CAM.state==='starting')) return '<video id="camv" playsinline muted autoplay></video>';
+  return ''; }
+function camNote(kind){ if(kind==='ktp'&&(S.scanning||S.ktpPhoto)) return '';
+  if(CAM.state==='live') return '<p class="camnote">Kamera aktif. Foto tidak dikirim ke mana pun.</p>';
+  if(CAM.state==='starting') return '<p class="camnote">Membuka kamera…</p>';
+  return `<p class="camnote">Tombol di bawah membuka kamera ${kind==='ktp'?'belakang':'depan'} ponsel. Di laptop, pilih foto dari file.</p>`; }
+function readPhoto(inp,key,go){ inp.addEventListener('change',()=>{ const f=inp.files&&inp.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=()=>{ S[key]=r.result; inp.value=''; go(); }; r.readAsDataURL(f); }); }
+const ORDER=['nasabah','ektp','domisili','pekerjaan','wali','wali2','wali3','wali4','ringkasan','tambahan','riplay','setuju','wajah','selesai'];
+const flow=()=>SCREENS.filter(s=>ORDER.includes(s.id)&&(!s.when||s.when())).sort((a,b)=>ORDER.indexOf(a.id)-ORDER.indexOf(b.id));
+
+/* ---------- field helpers ---------- */
+function esc(v){return (v??'').toString().replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+function input(k,label,ph,o={}){return `<div class="f"><label for="f_${k}">${label}${o.opt?'':'<span class="req">*</span>'}</label>
+  <input class="inp" id="f_${k}" data-field="${k}" type="${o.type||'text'}" value="${esc(S[k])}" placeholder="${ph}" ${o.inputmode?`inputmode="${o.inputmode}"`:''} ${o.mask?`data-mask="${o.mask}"`:''} ${o.maxlength?`maxlength="${o.maxlength}"`:''} autocomplete="off">
+  ${o.hint?`<div class="hint">${o.hint}</div>`:''}<div class="err" data-err="${k}"></div></div>`;}
+function selBtn(k,ph,src,title){const v=S[k]; return `<button type="button" class="inp sel" data-pick="${k}" data-src="${src}" data-title="${esc(title||ph)}" id="f_${k}"><span class="${v?'val':'ph'}">${v?esc(v):ph}</span><span class="caret"></span></button>`;}
+function picker(k,label,ph,src){return `<div class="f"><span class="lbl">${label}<span class="req">*</span></span>${selBtn(k,ph,src,label)}<div class="err" data-err="${k}"></div></div>`;}
+function fixed(label,val,note){return `<div class="f"><span class="lbl">${label}</span><div class="inp sel" style="background:#F2F4F7;cursor:default" aria-readonly="true"><span class="val">${esc(val)}</span><span class="badge info" style="flex:none">Otomatis</span></div>${note?`<div class="hint">${note}</div>`:''}</div>`;}
+function radio(k,label,opts){return `<div class="f"><span class="lbl">${label}<span class="req">*</span></span><div class="radios" role="radiogroup">${opts.map(o=>`<label class="rad"><input type="radio" name="${k}" data-radio="${k}" value="${o}" ${S[k]===o?'checked':''}> ${o}</label>`).join('')}</div><div class="err" data-err="${k}"></div></div>`;}
+function choice(k,val,ic,t,d){return `<button type="button" class="choice ${S[k]===val?'on':''}" data-choice="${k}" data-val="${val}"><span class="ic">${ic}</span><span><b>${t}</b><span>${d}</span></span></button>`;}
+function chk(k,text,reqd){return `<label class="chk f"><input type="checkbox" data-check="${k}" ${S[k]?'checked':''}> <span>${text}${reqd?'<span class="req">*</span>':''}</span></label>${reqd?`<div class="err" data-err="${k}" style="margin:-8px 0 12px 32px"></div>`:''}`;}
+function addr(p){
+  const kp=kpOf(S[p+'KodePos']);
+  return `<div class="f"><label for="f_${p}Alamat">Alamat<span class="req">*</span></label>
+    <div class="addrrow"><input class="inp" id="f_${p}Alamat" data-field="${p}Alamat" value="${esc(S[p+'Alamat'])}" placeholder="Nama jalan" autocomplete="off">
+    <button type="button" class="srch" data-loc="${p}" aria-label="Cari lokasi"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button></div>
+    <div class="err" data-err="${p}Alamat"></div></div>
+   ${input(p+'Detail','Detail Alamat (Opsional)','Gang, nomor rumah, patokan',{opt:true})}
+   <div class="row2">${input(p+'RT','RT','000',{inputmode:'numeric',maxlength:3})}${input(p+'RW','RW','000',{inputmode:'numeric',maxlength:3})}</div>
+   ${picker(p+'KodePos','Kode Pos','Cari kode pos atau kelurahan','kodepos')}
+   ${kp?`<p class="hint" style="margin:-10px 0 14px">Autofill: Kel. ${kp.kel} · Kec. ${kp.kec} · ${kp.kab} · Prov. ${kp.prov}</p>`:''}`;
+}
+function companyField(p,label){
+  const nb=needBadan(p);
+  return `<div class="f"><span class="lbl">${label}<span class="req">*</span></span>
+   ${S[p+'Lain']?`<button class="inp sel" disabled><span class="ph">Pilih dari daftar</span><span class="caret"></span></button>`:selBtn(p+'Perusahaan','Cari '+label.toLowerCase(),'tb_'+p,label)}
+   <label class="chk" style="margin-top:10px"><input type="checkbox" data-check="${p}Lain" ${S[p+'Lain']?'checked':''}> Tidak ada di daftar</label>
+   ${S[p+'Lain']?`<div class="${nb?'row-lain':''}" style="margin-top:10px">${nb?selBtn(p+'Badan','Jenis','badan','Jenis Badan Usaha'):''}<input class="inp" data-field="${p}NamaUsaha" value="${esc(S[p+'NamaUsaha'])}" placeholder="Nama resmi" aria-label="${label}"></div>
+     ${nb?`<div class="err" data-err="${p}Badan"></div>`:''}<p class="hint">Tulis nama resmi tanpa singkatan. Spesial karakter hanya . , ' / -</p>`:''}
+   <div class="err${S[p+'Lain']?' box':''}" data-err="${p}Perusahaan"></div></div>`;
+}
+function jobBlock(p){ const f=JF[p], j=jobOf(S[f.job]); const W=p==='w'?' Wali':'';
+  let h=picker(f.job,'Pekerjaan'+W,'Pilih pekerjaan','pekerjaan');
+  if(!j) return h;
+  h+=`<p class="hint" style="margin:-8px 0 14px">Kode pekerjaan: <b>${j.c}</b></p>`;
+  const jl=jabList(p); h+= jl.length>1?picker(f.jab,'Jabatan'+W,'Pilih jabatan','jab_'+p):fixed('Jabatan'+W,S[f.jab],'Sesuai mapping parameter pekerjaan '+j.c);
+  if(NA_JOBS.includes(j.c)) h+=fixed('Nama Tempat Bekerja'+W,'N/A','Untuk '+j.v+', nama tempat bekerja tidak berlaku (N/A)')+fixed('Alamat Tempat Bekerja'+W,'Sama dengan alamat domisili','Lampiran 2.1 no. 40: untuk IBRT/PENG diisi sesuai alamat domisili');
+  else h+=companyField(p,j.tb.split('/')[0].trim()+W)+`<p class="sub2">Alamat ${/Sekolah/.test(j.tb)?'Sekolah/Universitas':'Tempat Bekerja'}${W}</p>${addr(f.addr)}`;
+  const bl=bidList(p); h+= bl.length>1?picker(f.bid,'Bidang Pekerjaan'+W,'Pilih bidang pekerjaan','bid_'+p):fixed('Bidang Pekerjaan'+W,S[f.bid]);
+  h+= j.c==='PENS'?fixed('Sumber Penghasilan'+W,'Dana Pensiun','Pensiunan otomatis bersumber dari dana pensiun'):waliNoJob(p)?fixed('Sumber Penghasilan'+W,'Investasi','Wali yang tidak bekerja hanya bisa bersumber dari investasi'):picker(f.sumber,'Sumber Penghasilan'+W,'Pilih sumber penghasilan','sumber_'+p);
+  if(p==='k'&&!isWorking('k')&&j.c!=='PENS') h+=`<p class="hint" style="margin:-8px 0 14px">Mengikuti aplikasi referensi: pilih Orang Tua atau Investasi (kode SK 00099 Lainnya).${S.sumberDana==='Orang Tua'?' <b>Data wali wajib diisi di langkah berikutnya.</b>':''}</p>`;
+  h+= p==='k'&&G0_JOBS.includes(j.c)?fixed('Penghasilan Perbulan'+W,'Tidak Memiliki Penghasilan (G0)','Lampiran 2.1 no. 13: untuk PENG/MAHA/PELA/IBRT penghasilan wajib G0'):picker(f.gaji,'Penghasilan Perbulan'+W,'Pilih penghasilan',p==='w'?'penghasilan_w':'penghasilan');
+  return h;
+}
+
+/* ---------- summary + gate ---------- */
+const errKey=k=>V[k]?V[k](S[k]):'';
+function allKeys(){return flow().filter(s=>!['setuju','tambahan'].includes(s.id)).flatMap(s=>s.keys()).filter(k=>!k.startsWith('__'));}
+function compVal(p){ const j=jobOf(S[JF[p].job]); if(!j) return ''; if(NA_JOBS.includes(j.c)) return 'N/A'; return S[p+'Lain']?`${needBadan(p)?(S[p+'Badan']||'')+' ':''}${S[p+'NamaUsaha']||''}`.trim():(S[p+'Perusahaan']||''); }
+function addrVal(p){ if(!S[p+'Alamat']) return ''; const kp=kpOf(S[p+'KodePos']); return `${S[p+'Alamat']}${S[p+'Detail']?', '+S[p+'Detail']:''}${S[p+'RT']?`, RT ${S[p+'RT']}/RW ${S[p+'RW']}`:''}${kp?`, ${kp.kel}, ${kp.kec}, ${kp.kab}, ${kp.prov} ${kp.v}`:''}`; }
+function dummyKeys(){ const ks=['nama','ibu','namaWali','kPerusahaan','wPerusahaan','bankLain'].filter(k=>/List Bad Data|bukan nama yang valid|IBUNYA|berulang/.test(errKey(k))); if(BAD_TGL.includes(S.tglLahir)) ks.push('tglLahir'); return ks; }
+const dummyFound=()=>dummyKeys().length>0;
+function gate(){
+  normalizeJob('k'); normalizeJob('w');
+  const errs=allKeys().map(k=>[k,errKey(k)]).filter(x=>x[1]);
+  const ek=re=>errs.filter(([,e])=>re.test(e)).map(([k])=>k);
+  const comp=ek(/wajib/), val=errs.filter(([,e])=>!/wajib|List Bad Data|bukan nama yang valid|IBUNYA|berulang|tidak mungkin|tidak boleh Janda|tidak boleh Duda|terdaftar di CIF|Usia di bawah 15/.test(e)).map(([k])=>k);
+  const cons=[V.kawin(S.kawin)?'kawin':null,jobConsistency('k')?'pekerjaan':null,jobConsistency('w')&&needWali()?'pekerjaanWali':null].filter(Boolean);
+  const uniq=(S.nasabah==='tidak'&&S.nik===EXISTING_NIK)?['nik']:[];
+  const map=(!S.pekerjaan||company('k'))?[S.pekerjaan?'kPerusahaan':'pekerjaan']:[];
+  return {errs,rows:[
+    ['Completeness · atribut mandatory terisi, tanpa blank string',comp],
+    ['Validity · format NIK, RT/RW, kode pos, list parameter',val],
+    ['Accuracy · tidak terisi List Bad Data (Lampiran 4)',dummyKeys()],
+    ['Consistency · gender↔status, pekerjaan↔usia/penghasilan',cons],
+    ['Uniqueness · NIK tidak duplikat dengan CIF lain',uniq],
+    ['Mapping 3.2 · '+(NA_JOBS.includes(jobOf(S.pekerjaan)?.c)?'Tempat bekerja N/A sesuai mapping':'Nama tempat bekerja sesuai mapping'),map]].map(([t,ks])=>[t,ks.length===0,ks])};
+}
+function renderSummary(){
+  const g=gate(),ok=g.errs.length===0, j=jobOf(S.pekerjaan);
+  const sec=(t,id,rows)=>`<div class="sumsec"><div class="sumhead"><b>${t}</b><button class="edit" data-goto="${id}" aria-label="Ubah ${t}">✎ Ubah</button></div><dl class="kv">${rows.filter(Boolean).map(([a,b])=>`<dt>${a}</dt><dd>${esc(b)||'<span class="failt">belum diisi</span>'}</dd>`).join('')}</dl></div>`;
+  const NA=NA_JOBS.includes(j?.c);
+  const jabC=Object.entries(JAB).find(([c,v])=>v===S.jabatan)?.[0], bidC=Object.entries(BID).find(([c,v])=>v===S.bidang)?.[0];
+  const row=(a,c,v)=>`<tr><td>${a}</td><td><code>${esc(c??'–')}</code> ${esc(v||'')}</td></tr>`;
+  return `<div class="card gate ${ok?'':'fail'}"><div class="sumhead"><b>Data Quality Gate</b><span class="badge ${ok?'ok':''}" style="${ok?'':'background:#fff;color:var(--err)'}">${ok?'✓ Lolos':g.errs.length+' perlu diperbaiki'}</span></div>
+   ${g.rows.map(([t,p,ks])=>`<div class="gaterow"><span>${t}</span>${p?'<em class="pass">PASS</em>':`<button class="chkbtn" data-fix="${ks.join(',')}" aria-label="Perbaiki: ${t}">CHECK ›</button>`}</div>`).join('')}</div>
+  ${ok?'':'<p class="hint" style="margin:-6px 4px 14px">Tekan CHECK untuk langsung menuju data yang perlu diperbaiki.</p>'}
+  <div class="card">
+   ${sec('Data Pribadi','ektp',[['NIK',S.nik],['Nama',S.nama],['Tempat Lahir',S.tempatLahir],['Tanggal Lahir',S.tglLahir],['Jenis Kelamin',S.gender],['Agama',S.agama],['Status',S.kawin],['Pendidikan',S.pendidikan],['Nama Ibu Kandung',S.ibu],['Alamat e-KTP',addrVal('ktp')]])}
+   ${sec('Alamat Domisili','domisili',[['Domisili',S.domSame?'Sama dengan e-KTP':addrVal('dom')]])}
+   ${sec('Data Pekerjaan','pekerjaan',[['Pekerjaan',S.pekerjaan],['Jabatan',S.jabatan],[j?.tb.split('/')[0]||'Tempat Bekerja',compVal('k')],['Alamat Tempat Bekerja',NA?'Sama dengan alamat domisili':addrVal('ka')],['Bidang Pekerjaan',S.bidang],['Sumber Penghasilan',S.sumberDana],['Penghasilan Perbulan',S.penghasilan],['Transaksi Harian',S.transaksi],['Tujuan',S.tujuan]])}
+   ${needWali()?sec('Data Wali','wali',[['Hubungan',S.hubWali],['NIK Wali',S.nikWali],['Nama Wali',S.namaWali],['Pekerjaan Wali',S.pekerjaanWali],['Tempat Bekerja Wali',compVal('w')]]):''}
+  </div>
+  <div class="card"><b style="font-size:15px">Pratinjau mapping ke kode parameter CIF</b>
+   <table class="map">
+    ${row('Jenis Identitas','KT','KTP')}${row('Jenis Kelamin',codeOf('gender',S.gender))}${row('Agama',codeOf('agama',S.agama),S.agama)}${row('Status Perkawinan',codeOf('kawin',S.kawin),S.kawin)}${row('Pendidikan Terakhir',codeOf('pendidikan',S.pendidikan),S.pendidikan)}
+    ${row('Pekerjaan',j?.c,S.pekerjaan)}${row('Jabatan',jabC,S.jabatan)}${row('Bidang Pekerjaan',bidC,S.bidang)}
+    ${row('Nama Tempat Bekerja','',compVal('k').toUpperCase())}${row('Kode Pos Sesuai ID',S.ktpKodePos)}
+    ${row('Penghasilan Perbulan',codeOf('penghasilan',S.penghasilan),S.penghasilan)}${row('Sumber Penghasilan',codeOf('sumber',S.sumberDana),S.sumberDana)}${row('Transaksi Harian',codeOf('transaksi',S.transaksi),S.transaksi)}${row('Tujuan Pembukaan Rekening',codeOf('tujuan',S.tujuan),S.tujuan)}
+    ${row('Negara Domisili','ID','Indonesia')}
+   </table></div>`;
+}
+
+/* ---------- render ---------- */
+const $=id=>document.getElementById(id);
+const screen=()=>flow()[cur];
+function render(top=true){
+  normalizeJob('k'); normalizeJob('w');
+  const f=flow(),s=f[cur];
+  $('title').textContent=s.title;
+  $('prog').style.width=Math.round(cur/(f.length-1)*100)+'%';
+  $('steplabel').textContent=`Langkah ${cur+1} dari ${f.length} · ${s.label}`;
+  $('back').style.visibility=(cur===0||s.hideBack)?'hidden':'visible';
+  $('body').innerHTML=s.render();
+  const b=typeof s.btn==='function'?s.btn():(s.btn||'Lanjut');
+  $('foot').innerHTML=`<button class="btn" id="next">${b}</button>${s.second?`<button class="btn ghost" id="later">${s.second}</button>`:''}`;
+  $('next').onclick=next; if($('later')) $('later').onclick=()=>toast('Kamu bisa melanjutkan video call dari menu Buka Rekening kapan saja');
+  bind(); refreshErrors(); updateBtn(); if(top) $('body').scrollTop=0; syncCam();
+  $('pTitle').textContent=s.title+' · '+s.label;
+  const TAG={blu:['ref','Pola referensi'],dq:['dq','DQ Gate'],sk:['sk','SK Lampiran']};
+  $('pNotes').innerHTML=s.notes.map(([t,x])=>`<div class="note"><span class="tag ${TAG[t][0]}">${TAG[t][1]}</span><span>${x}</span></div>`).join('');
+  $('jump').innerHTML=f.map((x,i)=>`<button class="${i===cur?'cur':''}" data-jump="${i}">${i+1}. ${x.label}</button>`).join('');
+  $('jump').querySelectorAll('button').forEach(el=>el.onclick=()=>{cur=+el.dataset.jump; touched.clear(); render();});
+}
+function bind(){
+  const B=$('body');
+  B.querySelectorAll('[data-field]').forEach(el=>{const k=el.dataset.field;
+    el.addEventListener('input',()=>{let v=el.value; if(el.dataset.mask==='dmy'){ const d=v.replace(/\D/g,'').slice(0,8); v=d.slice(0,2)+(d.length>2?'/'+d.slice(2,4):'')+(d.length>4?'/'+d.slice(4):''); el.value=v; } else if(el.inputMode==='numeric'){v=v.replace(/\D/g,''); el.value=v;} S[k]=v; if(k.endsWith('NamaUsaha')&&v.trim().length>=3){ touched.add(k); touched.add(k.replace('NamaUsaha','Perusahaan')); } refreshErrors(); updateBtn();});
+    el.addEventListener('blur',()=>{ if(/(RT|RW)$/.test(k)&&/^\d{1,2}$/.test(S[k]||'')){S[k]=S[k].padStart(3,'0'); el.value=S[k];} touched.add(k); if(k.endsWith('NamaUsaha')) touched.add(k.replace('NamaUsaha','Perusahaan')); refreshErrors(); updateBtn();});
+  });
+  B.querySelectorAll('[data-pick]').forEach(el=>el.onclick=()=>openSheet(el.dataset.pick,el.dataset.src,el.dataset.title));
+  B.querySelectorAll('[data-loc]').forEach(el=>el.onclick=()=>openLoc(el.dataset.loc));
+  B.querySelectorAll('[data-radio]').forEach(el=>el.onchange=()=>{S[el.dataset.radio]=el.value; touched.add(el.dataset.radio); render(false);});
+  B.querySelectorAll('[data-goto]').forEach(el=>el.onclick=e=>{e.preventDefault(); e.stopPropagation(); const i=flow().findIndex(x=>x.id===el.dataset.goto); if(i>=0){cur=i; render();}});
+  B.querySelectorAll('[data-check]').forEach(el=>el.onchange=()=>{S[el.dataset.check]=el.checked; touched.add(el.dataset.check); render(false);});
+  B.querySelectorAll('[data-choice]').forEach(el=>el.onclick=()=>{S[el.dataset.choice]=el.dataset.val; touched.add(el.dataset.choice); render(false);});
+  B.querySelectorAll('[data-fix]').forEach(el=>el.onclick=()=>goFix(el.dataset.fix.split(',')));
+  B.querySelectorAll('[data-goto]').forEach(el=>el.onclick=()=>{cur=flow().findIndex(x=>x.id===el.dataset.goto); touched.clear(); render();});
+}
+let fixReturn=false;
+function goFix(keys){ const f=flow(); const k=keys.find(x=>f.some(s=>s.keys().includes(x)))||keys[0]; const i=f.findIndex(s=>s.keys().includes(k)); if(i<0){toast('Data tidak ditemukan');return;}
+  cur=i; touched.clear(); fixReturn=true; render(); f[i].keys().forEach(x=>{ if(errKey(x)) touched.add(x); }); refreshErrors();
+  const el=document.querySelector(`[data-field="${k}"],[data-pick="${k}"],[data-err="${k}"]`); el?.scrollIntoView({block:'center'}); if(el?.tagName==='INPUT') el.focus({preventScroll:true});
+  toast('Perbaiki isian yang ditandai merah, lalu tekan Lanjut untuk kembali ke Ringkasan'); }
+const errorsFor=s=>{normalizeJob('k'); normalizeJob('w'); return s.keys().filter(k=>!k.startsWith('__')).map(k=>[k,errKey(k)]).filter(x=>x[1]);};
+function refreshErrors(){
+  screen().keys().forEach(k=>{ if(k.startsWith('__')) return;
+    const e=errKey(k), show=touched.has(k)&&e;
+    const box=document.querySelector(`[data-err="${k}"]`); if(box){box.textContent=show?e:''; box.classList.toggle('show',!!show);}
+    let inp=document.querySelector(`[data-field="${k}"],[data-pick="${k}"]`);
+    if(k.endsWith('Perusahaan')&&S[k.replace('Perusahaan','Lain')]) inp=document.querySelector(`[data-field="${k.replace('Perusahaan','NamaUsaha')}"]`);
+    if(inp){inp.classList.toggle('bad',!!show); inp.classList.toggle('good',!e&&inp.tagName==='INPUT'&&!!inp.value);}
+  });
+}
+function updateBtn(){const s=screen(); $('next')?.classList.toggle('off',errorsFor(s).length>0);}
+function next(){
+  const s=screen();
+  if(s.id==='wajah'&&!S.faceOk){ if(S.faceScanning) return;
+    if(CAM.state==='live'&&CAM.for==='user'){ S.facePhoto=grab(true); startFace(); } else $('fileFace').click(); return; }
+  if(s.id==='ektp'&&!S.scanned){ if(S.scanning) return;
+    if(CAM.state==='live'&&CAM.for==='environment'){ S.ktpPhoto=grab(false); startKtp(); } else $('fileKtp').click(); return; }
+  const errs=errorsFor(s);
+  if(errs.length){ s.keys().forEach(k=>touched.add(k)); refreshErrors();
+    const k=errs[0][0], el=document.querySelector(`[data-field="${k}"],[data-pick="${k}"],[data-err="${k}"]`);
+    el?.scrollIntoView({block:'center'}); if(el?.tagName==='INPUT') el.focus({preventScroll:true});
+    toast(`${errs.length} isian perlu diperbaiki sebelum lanjut`); return; }
+  if(fixReturn){ fixReturn=false; cur=flow().findIndex(x=>x.id==='ringkasan'); touched.clear(); render(); return; }
+  if(s.id==='ringkasan'&&gate().errs.length){ toast('Masih ada data yang belum lolos Data Quality Gate'); return; }
+  if(s.id==='selesai'){ S={}; cur=0; touched.clear(); render(); return; }
+  cur=Math.min(cur+1,flow().length-1); touched.clear(); render();
+}
+const pick=(o,ks)=>Object.fromEntries(ks.filter(k=>k in o).map(k=>[k,o[k]]));
+$('back').onclick=()=>{ if(cur>0){cur--; fixReturn=false; touched.clear(); render();} };
+let tt; function toast(m){const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),2800);}
+
+/* ---------- bottom sheets ---------- */
+let sheet=null;
+function showSheet(title,ph){ $('sheetTitle').textContent=title; $('sheetSearch').value=''; $('sheetSearch').placeholder=ph; $('scrim').classList.add('open'); $('sheet').classList.add('open'); setTimeout(()=>$('sheetSearch').focus(),200); }
+function openSheet(k,src,title){ sheet={mode:'list',k,src}; showSheet(title,'Search'); drawOpts(''); }
+function openLoc(p){ sheet={mode:'loc',p}; showSheet('Cari Lokasi','Cari'); drawLoc(''); }
+function closeSheet(focusSel){ $('scrim').classList.remove('open'); $('sheet').classList.remove('open'); const s=sheet; sheet=null; if(s?.k) touched.add(s.k); render(false); const el=document.querySelector(focusSel||(s?.k?`[data-pick="${s.k}"]`:`[data-loc="${s?.p}"]`)); el?.focus(); }
+function drawOpts(q){ q=q.toLowerCase(); const {k,src}=sheet;
+  const list=(OPT[src]||[]).map(o=>typeof o==='string'?{v:o}:o).filter(o=>(o.v+' '+(o.d||'')+' '+(o.c||'')).toLowerCase().includes(q));
+  $('sheetOpts').innerHTML=list.length?list.map(o=>`<button class="opt ${S[k]===o.v?'cur':''}" data-v="${esc(o.v)}">${esc(o.v)}${o.d?`<small>${esc(o.d)}</small>`:o.c?`<small>Kode ${esc(o.c)}</small>`:''}</button>`).join(''):`<p class="empty">Tidak ditemukan. ${/^tb_/.test(src)?'Tutup lalu centang "Tidak ada di daftar".':'Coba kata kunci lain.'}</p>`;
+  $('sheetOpts').querySelectorAll('.opt').forEach(b=>b.onclick=()=>{S[k]=b.dataset.v; if(k.endsWith('KodePos')) S[k.replace('KodePos','Prov')]=kpOf(b.dataset.v)?.prov; closeSheet();});
+}
+function drawLoc(q){ const p=sheet.p; q=q.toLowerCase().trim();
+  const res=q.length>=3?PLACES.filter(x=>q.split(/\s+/).every(w=>(x.n+' '+x.d).toLowerCase().includes(w))):[];
+  $('sheetOpts').innerHTML=`<button class="locact" data-act="gps"><span class="ico">◎</span>Gunakan Lokasi Saat Ini</button>
+   <button class="locact" data-act="manual"><span class="ico">✎</span>Isi Alamat Secara Manual</button>
+   ${res.map(x=>`<button class="opt" data-i="${PLACES.indexOf(x)}">${esc(x.n)}<small>${esc(x.d)}</small></button>`).join('')}
+   ${q.length>=3&&!res.length?'<p class="empty">Lokasi tidak ditemukan. Coba nama jalan lain atau isi manual.</p>':''}`;
+  const apply=x=>{S[p+'Alamat']=x.n; S[p+'KodePos']=x.kp; S[p+'Prov']=kpOf(x.kp)?.prov; [p+'Alamat',p+'KodePos'].forEach(k=>touched.add(k)); closeSheet(`#f_${p}RT`);};
+  $('sheetOpts').querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>apply(PLACES[+b.dataset.i]));
+  $('sheetOpts').querySelector('[data-act="gps"]').onclick=()=>{toast('Lokasi terdeteksi: Damai, Balikpapan Kota'); apply(PLACES[0]);};
+  $('sheetOpts').querySelector('[data-act="manual"]').onclick=()=>closeSheet(`#f_${p}Alamat`);
+}
+$('sheetSearch').oninput=e=>sheet?.mode==='loc'?drawLoc(e.target.value):drawOpts(e.target.value);
+$('scrim').onclick=()=>closeSheet();
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sheet) closeSheet();});
+
+/* ---------- demo data (fiktif) ---------- */
+const GOOD={usia:'adult',nik:'6471054508990003',nama:'RINA KARTIKA SARI',tempatLahir:'Kota Balikpapan',tglLahir:'1999-08-05',gender:'Perempuan',agama:'Islam',kawin:'Belum Kawin',
+ ktpAlamat:'Jalan Jenderal Sudirman Gang Swadaya',ktpDetail:'No. 18',ktpRT:'012',ktpRW:'004',ktpKodePos:'76114',ktpProv:'Kalimantan Timur',pendidikan:'Sarjana',ibu:'Siti Aminah',nasabah:'tidak',
+ domSame:true,pekerjaan:'Pegawai Swasta',jabatan:'Staf',kLain:true,kBadan:'PT',kNamaUsaha:'Borneo Logistik Nusantara',kaAlamat:'Jalan Jenderal Sudirman No. 45',kaDetail:'Lantai 3',kaRT:'003',kaRW:'001',kaKodePos:'76113',kaProv:'Kalimantan Timur',bidang:'Pergudangan dan Aktivitas Penunjang Angkutan',
+ sumberDana:'Gaji/Pendapatan Rutin',penghasilan:'Penghasilan 5 - 10 juta',transaksi:'Transaksi Harian s.d. 10 juta',tujuan:'Tabungan',
+ hubWali:'Ayah',nikWali:'6471051203700001',namaWali:'Hendra Wijaya',tempatLahirWali:'Kota Samarinda',tglLahirWali:'1970-03-12',genderWali:'Laki-laki',kawinWali:'Kawin',
+ waAlamat:'Jalan MT Haryono',waRT:'005',waRW:'002',waKodePos:'76115',waProv:'Kalimantan Timur',pekerjaanWali:'Pegawai Negeri Sipil',jabatanWali:'Pelaksana',wLain:false,wPerusahaan:'Pemerintah Kota Balikpapan',wkaAlamat:'Jalan Jenderal Sudirman No. 45',wkaRT:'001',wkaRW:'001',wkaKodePos:'76113',wkaProv:'Kalimantan Timur',sumberDanaWali:'Gaji/Pendapatan Rutin',penghasilanWali:'Penghasilan 5 - 10 juta',
+ sejakTahun:'8 tahun',sejakBulan:'4 bulan',rekLain:'Tidak',bisnisLN:'Tidak',kayaLain:'Tidak',c1:true,c2:true,c3:true};
+const MINOR={tglLahir:'2012-03-14',pekerjaan:'Pelajar',kLain:false,kPerusahaan:'SMA Negeri 1 Balikpapan',kaAlamat:'Jalan Ahmad Yani',kaDetail:'',kaRT:'002',kaRW:'003',kaKodePos:'76141',kaProv:'Kalimantan Timur',sumberDana:'Lainnya',kawin:'Belum Kawin'};
+const goodFor=()=>GOOD;
+const STUDENT={tglLahir:'2004-02-10',pekerjaan:'Mahasiswa',kLain:false,kPerusahaan:'Universitas Balikpapan',kaAlamat:'Jalan Pupuk Raya',kaDetail:'',kaRT:'001',kaRW:'002',kaKodePos:'76123',kaProv:'Kalimantan Timur',sumberDana:'Orang Tua',transaksi:'Transaksi Harian s.d. 10 juta',tujuan:'Tabungan'};
+function fillStudent(){ S.scanned=true; Object.assign(S,GOOD,STUDENT,{nasabah:S.nasabah||'tidak'}); delete S.faceOk; touched.clear(); cur=flow().findIndex(x=>x.id==='pekerjaan'); render(); toast('Contoh: mahasiswa dengan sumber penghasilan Orang Tua → data wali diminta'); }
+const BAD={nik:'1234567890123456',nama:'Ibu',ibu:'IBUNYA',tglLahir:'1900-01-01',kawin:'Duda',ktpAlamat:'Lainnya',ktpRT:'000',ktpRW:'7',
+ domSame:false,domAlamat:'BANK',domDetail:'@@@',domRT:'000',domRW:'000',domKodePos:'',
+ pekerjaan:'Pegawai Swasta',kLain:true,kBadan:'',kNamaUsaha:'@#$%&*!',kaAlamat:'BANK',kaRT:'000',kaRW:'1',
+ nikWali:'1111111111111111',namaWali:'Test Card',tempatLahirWali:'',waAlamat:'-',waRT:'000',pekerjaanWali:'Pegawai Swasta',wLain:true,wBadan:'',wNamaUsaha:'swasta',
+ rekLain:'Ya',bankLain:'-',waktuBank:'31/02/2099'};
+function scanFill(){ if(!S.nik){ const g=goodFor(); Object.assign(S,pick(g,['nik','nama','tempatLahir','tglLahir','gender','agama','kawin','ktpAlamat','ktpDetail','ktpRT','ktpRW','ktpKodePos','ktpProv']));
+  if(S.nasabah==='ya'){ S.nik=EXISTING_NIK; Object.assign(S,pick(g,['pendidikan','ibu','domSame','pekerjaan','jabatan','bidang','kLain','kBadan','kNamaUsaha','kPerusahaan','kaAlamat','kaDetail','kaRT','kaRW','kaProv','kaKodePos','sumberDana','penghasilan','transaksi','tujuan'])); } } }
+function cifBanner(){ const found=S.nik===EXISTING_NIK;
+  if(found&&S.nasabah==='ya') return '<div class="card" style="border:1.5px solid #9AD3B4;background:var(--ok-soft)"><b>✓ Rekening ditemukan</b><p class="hint" style="margin:4px 0 0">NIK terdaftar di CIF bank. Data alamat, pekerjaan, dan keuangan ditarik dari CIF, lalu tetap divalidasi ulang.</p></div>';
+  if(found) return '<div class="card" style="border:1.5px solid #F2B8B3;background:var(--err-soft)"><b>NIK sudah terdaftar di CIF bank</b><p class="hint" style="margin:4px 0 8px">Kamu sudah punya rekening di bank ini. Agar tidak terbentuk CIF ganda, lanjutkan sebagai nasabah bank ini.</p><button class="edit" data-choice="nasabah" data-val="ya">Ubah ke "Ya, saya nasabah bank ini"</button></div>';
+  if(S.nasabah==='ya') return '<div class="card" style="border:1.5px solid #F5D9A8;background:var(--warn-soft)"><b>NIK belum terdaftar di CIF bank</b><p class="hint" style="margin:4px 0 0">Rekening atas NIK ini tidak ditemukan. Kamu akan didaftarkan sebagai nasabah baru.</p></div>';
+  return '<div class="card" style="border:1.5px solid #A3C1F0;background:var(--brand-soft)"><b>NIK belum terdaftar di CIF bank</b><p class="hint" style="margin:4px 0 0">Lanjut sebagai nasabah baru.</p></div>'; }
+function fill(src){
+  const s=screen(), G=goodFor();
+  if(s.id==='ektp') S.scanned=true;
+  if(s.id==='wajah') S.faceOk=true;
+  if(s.id==='nasabah'){ S.nasabah=src===BAD?S.nasabah:'tidak'; render(false); return; }
+  if(['ringkasan','riplay','wajah','selesai'].includes(s.id)){ for(const k in G) if(S[k]===undefined) S[k]=G[k]; S.scanned=true; if(isMinor()) Object.assign(S,MINOR); render(false); return; }
+  const extra=({ektp:['gender'],domisili:['domSame'],pekerjaan:['pekerjaan','kLain','kBadan','kNamaUsaha','kPerusahaan'],wali4:['pekerjaanWali','wLain','wBadan','wNamaUsaha','wPerusahaan']})[s.id]||[];
+  for(let pass=0;pass<3;pass++){ normalizeJob('k'); normalizeJob('w');
+    s.keys().concat(extra).forEach(k=>{ if(src===BAD&&k in BAD) S[k]=BAD[k]; else if(k in G&&(src===GOOD||S[k]===undefined)) S[k]=G[k]; }); }
+  if(src===GOOD) touched.clear(); else s.keys().forEach(k=>touched.add(k));
+  render(false);
+}
+$('fillGood').onclick=()=>fill(GOOD);
+$('fillBad').onclick=()=>fill(BAD);
+$('fillStudent').onclick=fillStudent;
+readPhoto($('fileKtp'),'ktpPhoto',startKtp); readPhoto($('fileFace'),'facePhoto',startFace);
+render();
+</script>
+</body>
+</html>
