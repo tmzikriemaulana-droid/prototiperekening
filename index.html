@@ -289,7 +289,7 @@ const BID={'0003':'Hukum dan Akuntansi','0004':'Kantor Pusat dan Konsultasi Mana
 const ALL='ALL';
 /* [kode, deskripsi, label Tempat Bekerja (3.2), jabatan, bidang] */
 const JOBS=[
- ['AKUN','Akunting / Keuangan','Nama Kantor Akuntan',[89,1,2,3,4,63,64,65],['0003','0050']],
+ ['AKUN','Akunting / Keuangan','Nama Kantor',[89,1,2,3,4,63,64,65],['0003','0050']],
  ['DAGA','Pedagang','Nama Tempat Usaha/ Jenis Dagangan',[89,64],['0054','0055','0061']],
  ['GURU','Pengajar/Guru/Dosen','Nama Sekolah/Universitas',[40,71,72,73,74,75,76,77,78,79],['0092']],
  ['KONS','Konsultan','Nama Perusahaan',[89,1,2,3,4,64,65],['0069','0070','0004']],
@@ -461,7 +461,7 @@ function jobConsistency(p){ const j=jobOf(S[JF[p].job]); if(!j) return ''; const
   return '';}
 function company(p){ const j=jobOf(S[JF[p].job]); const lbl=j?.tb||'Nama tempat bekerja';
   return S[p+'Lain'] ? workplaceName(S[p+'NamaUsaha'],lbl.split('/')[0],p==='w'?S.namaWali:S.nama,needBadan(p)?S[p+'Badan']:'') : req(S[p+'Perusahaan'],lbl.split('/')[0]); }
-const needBadan=p=>{const tb=jobOf(S[JF[p].job])?.tb||''; return /Perusahaan|Usaha/.test(tb)&&!/Sekolah/.test(tb);};
+const needBadan=p=>{const tb=jobOf(S[JF[p].job])?.tb||''; return /Perusahaan|Usaha|^Nama Kantor$/.test(tb)&&!/Sekolah/.test(tb);};
 
 const V={
   usia:v=>req(v,'Kategori usia'),
