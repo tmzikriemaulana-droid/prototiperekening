@@ -54,7 +54,11 @@ body{background:var(--page);font-family:"Nunito Sans",-apple-system,BlinkMacSyst
 .sel .ph{color:#A9B1BE}
 .sel .caret{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid #5A6475;flex:none;margin-left:8px}
 .sel .val{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.note-box{background:var(--brand-soft);color:var(--text);border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.45;margin:0 0 16px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.inp.ro{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#EEF1F5;border-color:#E1E6EC;color:#5A6475;cursor:not-allowed;min-height:52px;height:auto;padding-top:10px;padding-bottom:10px}
+.inp.ro .val{min-width:0;overflow-wrap:anywhere;line-height:1.35}
+.inp.ro .lock{flex:none;color:#9AA4B2}
 .dur{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .dur .f .lbl{font-size:12.5px}
 .pdfbar{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;font-weight:700;color:var(--text);background:var(--card);border-radius:10px;padding:10px 12px;margin:0 0 10px}
@@ -263,6 +267,7 @@ body{background:var(--page);font-family:"Nunito Sans",-apple-system,BlinkMacSyst
 </div>
 
 <script>
+const RIPLAY_PDF_NAME='RIPLAY_TABUNGAN_UMUM.pdf', RIPLAY_PDF='JVBERi0xLjQKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCA1OTUgODQyXSAvUmVzb3VyY2VzIDw8IC9Gb250IDw8IC9GMSA0IDAgUiAvRjIgNSAwIFIgPj4gPj4gL0NvbnRlbnRzIDYgMCBSID4+CmVuZG9iago0IDAgb2JqCjw8IC9UeXBlIC9Gb250IC9TdWJ0eXBlIC9UeXBlMSAvQmFzZUZvbnQgL0hlbHZldGljYSAvRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZyA+PgplbmRvYmoKNSAwIG9iago8PCAvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL0Jhc2VGb250IC9IZWx2ZXRpY2EtQm9sZCAvRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZyA+PgplbmRvYmoKNiAwIG9iago8PCAvTGVuZ3RoIDYwMzkgPj4Kc3RyZWFtCjAuOTA2IDAuOTQxIDAuOTkyIHJnIDAgNzUyIDU5NSA5MCByZSBmCkJUIDAuMDc1IDAuMjk0IDAuNjg2IHJnIC9GMiAyNiBUZiA0MC4wIDc5Mi4wIFRkIChSSVBMQVkpIFRqIEVUCkJUIDAuMTAyIDAuMzczIDAuODM5IHJnIC9GMiAxMSBUZiA0MC4wIDc3Mi4wIFRkIChSaW5na2FzYW4gSW5mb3JtYXNpIFByb2R1ayBkYW4vYXRhdSBMYXlhbmFuKSBUaiBFVApCVCAwLjA3NSAwLjI5NCAwLjY4NiByZyAvRjIgMjAgVGYgNTExLjAgNzkyLjAgVGQgKEJBTkspIFRqIEVUCkJUIDAuMzUzIDAuMzkyIDAuNDU5IHJnIC9GMSA4IFRmIDQ4My4wIDc3Ni4wIFRkIChcKGNvbnRvaCBwcm90b3RpcGVcKSkgVGogRVQKMC4xMDIgMC4zNzMgMC44MzkgcmcgNDAgNzIyIDUxNSAxNiByZSBmCkJUIDEuMDAwIDEuMDAwIDEuMDAwIHJnIC9GMiA5IFRmIDExNC4zIDcyNi41IFRkIChSSU5HS0FTQU4gSU5GT1JNQVNJIFBST0RVSyBEQU4gTEFZQU5BTiBcKFJJUExBWVwpIFZFUlNJIFVNVU0gLSBUQUJVTkdBTiBVTVVNKSBUaiBFVApCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjIgOSBUZiA0OC4wIDcwMC4wIFRkIChOYW1hIFBlbmVyYml0KSBUaiBFVApCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjEgOSBUZiAxNjAuMCA3MDAuMCBUZCAoOiBCYW5rIFwoY29udG9oIHByb3RvdGlwZVwpKSBUaiBFVApCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjIgOSBUZiA0OC4wIDY4Ni4wIFRkIChOYW1hIFByb2R1aykgVGogRVQKQlQgMC4xMTQgMC4xNDEgMC4yMDAgcmcgL0YxIDkgVGYgMTYwLjAgNjg2LjAgVGQgKDogVGFidW5nYW4gVW11bSkgVGogRVQKQlQgMC4xMTQgMC4xNDEgMC4yMDAgcmcgL0YyIDkgVGYgNDguMCA2NzIuMCBUZCAoSmVuaXMgUHJvZHVrKSBUaiBFVApCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjEgOSBUZiAxNjAuMCA2NzIuMCBUZCAoOiBUYWJ1bmdhbikgVGogRVQKQlQgMC4xMTQgMC4xNDEgMC4yMDAgcmcgL0YyIDkgVGYgNDguMCA2NTguMCBUZCAoTWF0YSBVYW5nKSBUaiBFVApCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjEgOSBUZiAxNjAuMCA2NTguMCBUZCAoOiBJRFIpIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMiA5IFRmIDQ4LjAgNjQ0LjAgVGQgKERlc2tyaXBzaSBQcm9kdWspIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDE2MC4wIDY0NC4wIFRkICg6IFRhYnVuZ2FuIHVudHVrIG5hc2FiYWggeWFuZyBtZW5naW5naW5rYW4ga2VtdWRhaGFuIGJlcnRyYW5zYWtzaSkgVGogRVQKMC4xMDIgMC4zNzMgMC44MzkgcmcgNDAgNjE2IDUxNSAxNiByZSBmCkJUIDEuMDAwIDEuMDAwIDEuMDAwIHJnIC9GMiA5IFRmIDI3MC4zIDYyMC41IFRkIChGSVRVUiBVVEFNQSkgVGogRVQKQlQgMC4xMTQgMC4xNDEgMC4yMDAgcmcgL0YxIDkgVGYgNDguMCA1OTQuMCBUZCAoU2V0b3JhbiBBd2FsKSBUaiBFVAowLjM1MyAwLjM5MiAwLjQ1OSBSRyAwLjYgdyAzMDAgNTkwIDI1NSAxNSByZSBTCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDQwNy4yIDU5NC4wIFRkIChScDI1MC4wMDApIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDQ4LjAgNTc1LjAgVGQgKFNhbGRvIE1pbmltdW0pIFRqIEVUCjAuMzUzIDAuMzkyIDAuNDU5IFJHIDAuNiB3IDMwMCA1NzEgMjU1IDE1IHJlIFMKQlQgMC4xMTQgMC4xNDEgMC4yMDAgcmcgL0YxIDkgVGYgNDA5LjUgNTc1LjAgVGQgKFJwNTAuMDAwKSBUaiBFVApCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjEgOSBUZiA0OC4wIDU1Ni4wIFRkIChMaW1pdCBUYXJpayBUdW5haSkgVGogRVQKMC4zNTMgMC4zOTIgMC40NTkgUkcgMC42IHcgMzAwIDU1MiAyNTUgMTUgcmUgUwpCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjEgOSBUZiA0MDAuNSA1NTYuMCBUZCAoUnAxMC4wMDAuMDAwKSBUaiBFVApCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjEgOSBUZiA0OC4wIDUzNy4wIFRkIChMaW1pdCBUcmFuc2ZlciBBbnRhciBCYW5rKSBUaiBFVAowLjM1MyAwLjM5MiAwLjQ1OSBSRyAwLjYgdyAzMDAgNTMzIDI1NSAxNSByZSBTCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDM2NC41IDUzNy4wIFRkIChScDEwLjAwMC4wMDAgLSBScDI1MC4wMDAuMDAwKSBUaiBFVApCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjEgOSBUZiA0OC4wIDUxOC4wIFRkIChMaW1pdCBUcmFuc2ZlciBTZXNhbWEgQmFuaykgVGogRVQKMC4zNTMgMC4zOTIgMC40NTkgUkcgMC42IHcgMzAwIDUxNCAyNTUgMTUgcmUgUwpCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjEgOSBUZiAzNjIuMiA1MTguMCBUZCAoUnAyMDAuMDAwLjAwMCAtIFJwMjUwLjAwMC4wMDApIFRqIEVUCjAuMTAyIDAuMzczIDAuODM5IHJnIDQwIDQ4NyA1MTUgMTYgcmUgZgpCVCAxLjAwMCAxLjAwMCAxLjAwMCByZyAvRjIgOSBUZiAyODUuMSA0OTEuNSBUZCAoQklBWUEpIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDQ4LjAgNDY1LjAgVGQgKEJpYXlhIEFkbWluaXN0cmFzaSBCdWxhbmFuKSBUaiBFVAowLjM1MyAwLjM5MiAwLjQ1OSBSRyAwLjYgdyAzMDAgNDYxIDI1NSAxNSByZSBTCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDQwOS41IDQ2NS4wIFRkIChScDEyLjAwMCkgVGogRVQKQlQgMC4xMTQgMC4xNDEgMC4yMDAgcmcgL0YxIDkgVGYgNDguMCA0NDYuMCBUZCAoQmlheWEgQWRtaW4gUGVuYXJpa2FuIGRpIFRlbGxlcikgVGogRVQKMC4zNTMgMC4zOTIgMC40NTkgUkcgMC42IHcgMzAwIDQ0MiAyNTUgMTUgcmUgUwpCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjEgOSBUZiAzNjIuMiA0NDYuMCBUZCAoUnAxMC4wMDAgdW50dWsgPD0gUnA1LjAwMC4wMDApIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDQ4LjAgNDI3LjAgVGQgKERlbmRhIGRpIGJhd2FoIFNhbGRvIE1pbmltdW0pIFRqIEVUCjAuMzUzIDAuMzkyIDAuNDU5IFJHIDAuNiB3IDMwMCA0MjMgMjU1IDE1IHJlIFMKQlQgMC4xMTQgMC4xNDEgMC4yMDAgcmcgL0YxIDkgVGYgNDE0LjAgNDI3LjAgVGQgKEdyYXRpcykgVGogRVQKQlQgMC4xMTQgMC4xNDEgMC4yMDAgcmcgL0YxIDkgVGYgNDguMCA0MDguMCBUZCAoQmlheWEgS2FydHUgU2lsdmVyIC8gQmxhY2spIFRqIEVUCjAuMzUzIDAuMzkyIDAuNDU5IFJHIDAuNiB3IDMwMCA0MDQgMjU1IDE1IHJlIFMKQlQgMC4xMTQgMC4xNDEgMC4yMDAgcmcgL0YxIDkgVGYgMzg5LjIgNDA4LjAgVGQgKFJwMy41MDAgLyBScDYuNTAwKSBUaiBFVApCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjEgOSBUZiA0OC4wIDM4OS4wIFRkIChCaWF5YSBUdXR1cCBSZWtlbmluZykgVGogRVQKMC4zNTMgMC4zOTIgMC40NTkgUkcgMC42IHcgMzAwIDM4NSAyNTUgMTUgcmUgUwpCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjEgOSBUZiA0MDkuNSAzODkuMCBUZCAoUnA1MC4wMDApIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDQ4LjAgMzcwLjAgVGQgKFBlbmdnYW50aWFuIEJ1a3Uga2FyZW5hIFBlbnVoIC8gUnVzYWspIFRqIEVUCjAuMzUzIDAuMzkyIDAuNDU5IFJHIDAuNiB3IDMwMCAzNjYgMjU1IDE1IHJlIFMKQlQgMC4xMTQgMC4xNDEgMC4yMDAgcmcgL0YxIDkgVGYgMzg5LjIgMzcwLjAgVGQgKEdyYXRpcyAvIFJwMjUuMDAwKSBUaiBFVAowLjEwMiAwLjM3MyAwLjgzOSByZyA0MCAzMzkgNTE1IDE2IHJlIGYKQlQgMS4wMDAgMS4wMDAgMS4wMDAgcmcgL0YyIDkgVGYgMjgwLjIgMzQzLjUgVGQgKE1BTkZBQVQpIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDU2LjAgMzE3LjAgVGQgKDEuKSBUaiBFVApCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjEgOSBUZiA3NC4wIDMxNy4wIFRkIChBc3VyYW5zaSBrZWNlbGFrYWFuIGhpbmdnYSAyNTAlIGRhcmkgc2FsZG8gcmVrZW5pbmcsIG1ha3NpbXVtIFJwMTUwIGp1dGEpIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDU2LjAgMzAzLjAgVGQgKDIuKSBUaiBFVApCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjEgOSBUZiA3NC4wIDMwMy4wIFRkIChUcmFuc2ZlciByZWFsLXRpbWUgYW50YXIgYmFuaykgVGogRVQKQlQgMC4xMTQgMC4xNDEgMC4yMDAgcmcgL0YxIDkgVGYgNTYuMCAyODkuMCBUZCAoMy4pIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDc0LjAgMjg5LjAgVGQgKEtlbXVkYWhhbiBha3NlcyBtZWxhbHVpIGJlcmFnYW0gY2hhbm5lbCkgVGogRVQKQlQgMC4xMTQgMC4xNDEgMC4yMDAgcmcgL0YxIDkgVGYgNTYuMCAyNzUuMCBUZCAoNC4pIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDc0LjAgMjc1LjAgVGQgKEthcnR1IGRhcGF0IGRpZ3VuYWthbiBkaSBzZWx1cnVoIGR1bmlhKSBUaiBFVAowLjEwMiAwLjM3MyAwLjgzOSByZyA0MCAyNDcgNTE1IDE2IHJlIGYKQlQgMS4wMDAgMS4wMDAgMS4wMDAgcmcgL0YyIDkgVGYgMjgyLjYgMjUxLjUgVGQgKFJJU0lLTykgVGogRVQKQlQgMC4xMTQgMC4xNDEgMC4yMDAgcmcgL0YxIDkgVGYgNDguMCAyMjUuMCBUZCAoU2ltcGFuYW4geWFuZyBkaWphbWluIG9sZWggTFBTIGhhbnlhIGhpbmdnYSAyIG1pbGlhciBydXBpYWggcGVyIG5hc2FiYWguKSBUaiBFVAowLjEwMiAwLjM3MyAwLjgzOSByZyA0MCAxOTcgNTE1IDE2IHJlIGYKQlQgMS4wMDAgMS4wMDAgMS4wMDAgcmcgL0YyIDkgVGYgMjM1LjYgMjAxLjUgVGQgKFBFUlNZQVJBVEFOIERBTiBUQVRBIENBUkEpIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDU2LjAgMTc1LjAgVGQgKC0pIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDc0LjAgMTc1LjAgVGQgKERva3VtZW46IEtUUDsgTlBXUDsgUGFzcG9yOyBLSU0vS0lUQVMvS0lUQVApIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDU2LjAgMTYxLjAgVGQgKC0pIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDc0LjAgMTYxLjAgVGQgKFNldG9yYW4gYXdhbCBtaW5pbXVtOiBScDI1MC4wMDApIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDU2LjAgMTQ3LjAgVGQgKC0pIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDc0LjAgMTQ3LjAgVGQgKE1pbmltdW0gc2V0b3JhbiBzZWxhbmp1dG55YTogUnAxMC4wMDApIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDU2LjAgMTMzLjAgVGQgKC0pIFRqIEVUCkJUIDAuMTE0IDAuMTQxIDAuMjAwIHJnIC9GMSA5IFRmIDc0LjAgMTMzLjAgVGQgKFNhbGRvIG1lbmdlbmRhcCBtaW5pbWFsOiBScDUwLjAwMCkgVGogRVQKMC4xMDIgMC4zNzMgMC44MzkgcmcgNDAgMTA1IDUxNSAxNiByZSBmCkJUIDEuMDAwIDEuMDAwIDEuMDAwIHJnIC9GMiA5IFRmIDI3Mi44IDEwOS41IFRkIChESVNDTEFJTUVSKSBUaiBFVApCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjEgOSBUZiA1Ni4wIDgzLjAgVGQgKDEuKSBUaiBFVApCVCAwLjExNCAwLjE0MSAwLjIwMCByZyAvRjEgOSBUZiA3NC4wIDgzLjAgVGQgKEJhbmsgZGFwYXQgbWVub2xhayBwZXJtb2hvbmFuIHByb2R1ayBOYXNhYmFoIGFwYWJpbGEgdGlkYWsgbWVtZW51aGkgcGVyc3lhcmF0YW4geWFuZyBiZXJsYWt1LikgVGogRVQKQlQgMC4xMTQgMC4xNDEgMC4yMDAgcmcgL0YxIDkgVGYgNTYuMCA2OS4wIFRkICgyLikgVGogRVQKQlQgMC4xMTQgMC4xNDEgMC4yMDAgcmcgL0YxIDkgVGYgNzQuMCA2OS4wIFRkIChOYXNhYmFoIHdhamliIG1lbWJhY2EgUklQTEFZIGluaSBkZW5nYW4gdGVsaXRpIHNlYmVsdW0gbWVueWV0dWp1aSBkYW4gYmVyaGFrIGJlcnRhbnlhIGtlcGFkYSBCYW5rLikgVGogRVQKQlQgMC4zNTMgMC4zOTIgMC40NTkgcmcgL0YxIDcuNSBUZiA0MC4wIDQwLjAgVGQgKERva3VtZW4gY29udG9oIHVudHVrIHByb3RvdGlwZSBwZW1idWthYW4gcmVrZW5pbmcuIEFuZ2thIGhhbnlhIGlsdXN0cmFzaSwgYnVrYW4ga2V0ZW50dWFuIHByb2R1ayB5YW5nIGJlcmxha3UuKSBUaiBFVAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA3CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKMDAwMDAwMDI1MSAwMDAwMCBuIAowMDAwMDAwMzQ4IDAwMDAwIG4gCjAwMDAwMDA0NTAgMDAwMDAgbiAKdHJhaWxlcgo8PCAvU2l6ZSA3IC9Sb290IDEgMCBSID4+CnN0YXJ0eHJlZgo2NTQxCiUlRU9GCg==';
 /* =========================================================
    Parameter mengikuti Lampiran SK Standardisasi Kualitas Data Nasabah
    (3.2 Mapping Informasi Pekerjaan, 3.4–3.12 List Parameter, 4 List Bad Data)
@@ -353,23 +358,24 @@ const bidList=p=>{const j=jobOf(S[JF[p].job]); if(!j) return []; const codes=j.b
 const OPT={
   kota:KOTA, gender:LIST.gender, agama:LIST.agama, kawin:LIST.kawin, pendidikan:LIST.pendidikan, tujuan:LIST.tujuan, penghasilan:LIST.penghasilan, sumber:LIST.sumber, transaksi:LIST.transaksi.filter(x=>x.c!=='N0'), tahunTinggal:P([0,1,2,3,4,5,6,7,8,9].map(n=>[String(n),n+' tahun'])), bulanTinggal:P([0,1,2,3,4,5,6,7,8,9,10,11].map(n=>[String(n),n+' bulan'])),
   pekerjaan:JOBS.map(j=>({v:j.v,c:j.c})), kodepos:KODEPOS, badan:['PT','CV','UD','Koperasi','Yayasan','Firma','Instansi','Perorangan'],
-  hubWali:['Suami','Istri','Ayah','Ibu','Anak','Saudara'],
+  get hubWali(){return S.sumberDana==='Pasangan'?['Suami']:['Suami','Istri','Ayah','Ibu','Anak','Saudara']},
   negara:['Singapura','Malaysia','Tiongkok','Jepang','Korea Selatan','Amerika Serikat','Australia','Lainnya'], kekayaan:['Warisan','Hibah','Hasil Investasi','Penjualan Aset','Lainnya'],
   get jab_k(){return jabList('k')}, get jab_w(){return jabList('w')}, get bid_k(){return bidList('k')}, get bid_w(){return bidList('w')},
   get penghasilan_w(){return LIST.penghasilan.filter(x=>x.c!=='G0')}, get sumber_k(){return sumberList('k')}, get sumber_w(){return sumberList('w')},
   get tb_k(){return /Sekolah/.test(jobOf(S.pekerjaan)?.tb||'')?SCHOOLS:COMPANIES}, get tb_w(){return /Sekolah/.test(jobOf(S.pekerjaanWali)?.tb||'')?SCHOOLS:COMPANIES}
 };
 const SUMBER_NW=P([['00099','Orang Tua'],['00099','Investasi']]);
+const SUMBER_IRT=P([['00099','Orang Tua'],['00099','Pasangan'],['00099','Wali'],['00099','Investasi']]); /* ibu rumah tangga: dana dari penanggung */
 const SUMBER_PENS=P([['00011','Dana Pensiun']]); /* pensiunan: otomatis dana pensiun (pendapatan rutin) */
 const isPens=p=>jobOf(S[JF[p].job])?.c==='PENS'; /* mengikuti aplikasi referensi; kode SK 00099 Lainnya */
 const isWorking=p=>{const j=jobOf(S[JF[p].job]); return j&&!['PENG','IBRT','MAHA','PELA','PENS'].includes(j.c);};
 const waliNoJob=p=>p==='w'&&G0_JOBS.includes(jobOf(S[JF[p].job])?.c);
-const sumberList=p=>isPens(p)?SUMBER_PENS:waliNoJob(p)?P([['00099','Investasi']]):isWorking(p)?LIST.sumber:(p==='w'?P([['00099','Investasi'],['00099','Lainnya']]):SUMBER_NW);
-const codeOf=(list,v)=>(LIST[list]||[]).concat(list==='sumber'?SUMBER_NW.concat(SUMBER_PENS):[]).find(x=>x.v===v)?.c;
+const sumberList=p=>isPens(p)?SUMBER_PENS:(p==='k'&&jobOf(S.pekerjaan)?.c==='IBRT')?SUMBER_IRT:waliNoJob(p)?P([['00099','Investasi']]):isWorking(p)?LIST.sumber:(p==='w'?P([['00099','Investasi'],['00099','Lainnya']]):SUMBER_NW);
+const codeOf=(list,v)=>(LIST[list]||[]).concat(list==='sumber'?SUMBER_NW.concat(SUMBER_PENS,SUMBER_IRT):[]).find(x=>x.v===v)?.c;
 
 const EXISTING_NIK='6471050101900001'; /* simulasi NIK yang sudah ada di CIF (uji Uniqueness) */
 const isMinor=()=>false; /* pembukaan rekening hanya untuk usia ≥17 */
-const needWali=()=>S.sumberDana==='Orang Tua';
+const needWali=()=>['Orang Tua','Pasangan','Wali'].includes(S.sumberDana);
 let S={}, touched=new Set(), cur=0;
 
 /* ---------- rule helpers (Lampiran 2.1 & 4) ---------- */
@@ -399,12 +405,10 @@ function nameCheck(v,label,kind){ v=v||'';
   return '';}
 const NAMA_ORANG=['rian','rafi','ratu','budi','andi','agus','dewi','siti','rina','rizky','rizki','putri','putra','dian','eka','adi','ahmad','muhammad','nur','sri','wahyu','yuni','fajar','indah','ayu','bayu','dimas','fitri','hendra','joko','reza','rudi','tono','yanto','yudi','anisa','intan','lestari','sari','tri','dwi'];
 const BADAN_RE=/^(pt|cv|ud|pd|fa|firma|koperasi|yayasan|perum|persero|tbk)\.?\s+/i;
-function workplaceName(v,label,own){ const e=workplace(v,label); if(e) return e;
+function workplaceName(v,label,own,badan){ const e=workplace(v,label); if(e) return e;
+  if(badan){ const b=badan.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); if(new RegExp('^'+b+'\\.?(\\s|$)','i').test(v.trim())) return `Tidak perlu menulis "${badan}" lagi, sudah dipilih di Jenis Badan Usaha. Cukup tulis namanya, contoh: Makmur Abadi`; }
   const words=v.trim().replace(BADAN_RE,'').split(/\s+/).filter(Boolean);
-  if(words.length<2) return 'Tidak boleh hanya satu kata. Contoh: PT Makmur Abadi, CV Sentosa Lestari';
-  const ownW=(own||'').toLowerCase().split(/\s+/).filter(w=>w.length>=3);
-  if(words.some(w=>ownW.includes(w.toLowerCase()))) return 'Tidak boleh memakai nama sendiri. Contoh: PT Makmur Abadi, CV Sentosa Lestari';
-  if(words.every(w=>NAMA_ORANG.includes(w.toLowerCase()))) return 'Tidak boleh memakai nama orang. Contoh: PT Makmur Abadi, CV Sentosa Lestari';
+  if(/\blainnya\b/i.test(v)) return 'Nama tidak boleh berisi "Lainnya". Tulis nama tempat bekerja yang sebenarnya';
   return ''; }
 function workplace(v,label){ v=v||'';
   if(blank(v)) return `${label} wajib diisi (tidak boleh kosong/hanya spasi)`;
@@ -456,7 +460,7 @@ function jobConsistency(p){ const j=jobOf(S[JF[p].job]); if(!j) return ''; const
   if(a!==null&&a<15&&!['PELA','PENG'].includes(j.c)) return 'Usia di bawah 15 tahun tidak boleh terisi pekerja/pengajar/mahasiswa/wiraswasta';
   return '';}
 function company(p){ const j=jobOf(S[JF[p].job]); const lbl=j?.tb||'Nama tempat bekerja';
-  return S[p+'Lain'] ? workplaceName(S[p+'NamaUsaha'],lbl.split('/')[0],p==='w'?S.namaWali:S.nama) : req(S[p+'Perusahaan'],lbl.split('/')[0]); }
+  return S[p+'Lain'] ? workplaceName(S[p+'NamaUsaha'],lbl.split('/')[0],p==='w'?S.namaWali:S.nama,needBadan(p)?S[p+'Badan']:'') : req(S[p+'Perusahaan'],lbl.split('/')[0]); }
 const needBadan=p=>{const tb=jobOf(S[JF[p].job])?.tb||''; return /Perusahaan|Usaha/.test(tb)&&!/Sekolah/.test(tb);};
 
 const V={
@@ -474,9 +478,10 @@ const V={
   namaWali:v=>nameCheck(v,'Nama lengkap wali','nama'), tempatLahirWali:v=>req(v,'Tempat lahir wali'), tglLahirWali:v=>dob(v), genderWali:v=>req(v,'Jenis kelamin wali'),
   kawinWali:v=>{const e=req(v,'Status perkawinan wali'); if(e) return e; if(S.genderWali==='Laki-laki'&&v==='Janda') return 'Untuk jenis kelamin M, status tidak boleh Janda (J)'; if(S.genderWali==='Perempuan'&&v==='Duda') return 'Untuk jenis kelamin F, status tidak boleh Duda (D)'; return '';},
   pekerjaanWali:v=>req(v,'Pekerjaan wali')||jobConsistency('w'), jabatanWali:v=>req(v,'Jabatan wali'), bidangWali:v=>req(v,'Bidang pekerjaan wali'), wPerusahaan:()=>company('w'), wBadan:v=>req(v,'Jenis badan usaha'), sumberDanaWali:v=>req(v,'Sumber penghasilan wali'), penghasilanWali:v=>req(v,'Penghasilan wali'),
-  sejakTahun:v=>req(v,'Tahun'), sejakBulan:v=>req(v,'Bulan'),
-  rekLain:v=>req(v,'Jawaban'), bankLain:v=>workplace(v,'Nama bank/institusi'), waktuBank:v=>dmy(v,'Waktu dikeluarkan'),
-  bisnisLN:v=>req(v,'Jawaban'), negara:v=>req(v,'Negara'), kayaLain:v=>req(v,'Jawaban'), sumberKaya:v=>req(v,'Sumber kekayaan'),
+  /* data tambahan: semuanya opsional; hanya dicek bila diisi */
+  sejakTahun:()=>'', sejakBulan:()=>'',
+  rekLain:()=>'', bankLain:v=>v?workplace(v,'Nama bank/institusi'):'', waktuBank:v=>v?dmy(v,'Waktu dikeluarkan'):'',
+  bisnisLN:()=>'', negara:()=>'', kayaLain:()=>'', sumberKaya:()=>'',
   c1:v=>v?'':'Persetujuan ini wajib', c2:v=>v?'':'Pernyataan ini wajib', c3:v=>v?'':'Pernyataan ini wajib'
 };
 ['ktp','dom','ka','wa','wka'].forEach(p=>{ V[p+'Alamat']=street; V[p+'Detail']=optional; V[p+'RT']=v=>rtrw(v,'RT'); V[p+'RW']=v=>rtrw(v,'RW'); V[p+'KodePos']=v=>{const e=req(v,'Kode pos'); if(e) return e; if(v==='99999') return 'Kode pos tidak boleh 99999'; return '';}; });
@@ -490,6 +495,7 @@ function normalizeJob(p){ const f=JF[p], j=jobOf(S[f.job]); if(!j) return;
   if(S[f.sumber]&&!sumberList(p).some(x=>x.v===S[f.sumber])) delete S[f.sumber];
   if(p==='k'&&G0_JOBS.includes(j.c)) S[f.gaji]='Tidak Memiliki Penghasilan';
   if(j.c==='PENS') S[f.sumber]='Dana Pensiun';
+  if(p==='k'){ if(S.sumberDana==='Pasangan') S.hubWali='Suami'; }
   if(waliNoJob(p)) S[f.sumber]='Investasi';
   if(p==='w'&&S[f.gaji]==='Tidak Memiliki Penghasilan') delete S[f.gaji];
   if(NA_JOBS.includes(j.c)){ S[p+'Lain']=false; S[p+'Perusahaan']='N/A'; const src=(p==='k'&&!S.domSame)?'dom':(p==='k'?'ktp':'wa'); ['Alamat','Detail','RT','RW','KodePos','Prov'].forEach(x=>S[f.addr+x]=S[src+x]); }
@@ -511,26 +517,19 @@ const SCREENS=[
    <div class="err" data-err="usia"></div></div>`,btn:'Lanjut',
   notes:[['blu','Referensi layar 1: dua kartu pilihan usia. Kategori menentukan apakah data wali diminta.']]},
 
- {id:'ektp',title:'Data e-KTP',label:'Data sesuai e-KTP',keys:()=>S.scanned?['nik','nama','tempatLahir','tglLahir','gender','agama','kawin',...addrKeys('ktp'),'pendidikan','ibu']:['__scan'],render:()=>!S.scanned?`
+ {id:'ektp',title:'Data e-KTP',label:'Data sesuai e-KTP',keys:()=>S.scanned?['nik','nama','tempatLahir','tglLahir','gender','agama','kawin',...addrKeys('ktp').filter(k=>k!=='ktpDetail'),'pendidikan','ibu']:['__scan'],render:()=>!S.scanned?`
   <div class="card"><p class="qh">Foto e-KTP kamu</p><p class="sub">Data e-KTP dibaca otomatis, kamu tinggal memastikan.</p>
    <div class="scan">${ktpFrame()}${S.scanning?'<div class="scanline"></div>':''}</div>${camNote('ktp')}
    <p class="hint" style="text-align:center">${S.scanning?'Membaca e-KTP dan mencocokkan NIK ke CIF bank…':'NIK dari e-KTP dipakai untuk mengecek apakah kamu sudah punya rekening di bank ini.'}</p></div>`:`
-  ${cifBanner()}<div class="card"><p class="qh">Pastikan semua data kamu sesuai e-KTP</p><p class="sub"><span class="badge ok">✓ Terbaca otomatis</span> Perbaiki bila ada yang salah baca.</p>
-   ${input('nik','NIK','16 digit NIK',{inputmode:'numeric',maxlength:16})}
-   ${input('nama','Nama Lengkap','Sesuai e-KTP')}
-   ${picker('tempatLahir','Tempat Lahir','Pilih kota/kabupaten','kota')}
-   ${input('tglLahir','Tanggal Lahir','',{type:'date'})}
-   ${radio('gender','Jenis Kelamin',LIST.gender.map(x=>x.v))}
-   ${picker('agama','Agama','Pilih agama','agama')}
-   ${picker('kawin','Status Perkawinan','Pilih status perkawinan','kawin')}
-   <p class="sub2">Alamat sesuai e-KTP</p>
-   ${addr('ktp')}
+  ${cifBanner()}<div class="card"><p class="qh">Data e-KTP kamu</p><p class="sub"><span class="badge ok">✓ Terbaca otomatis</span> Data dari e-KTP terkunci dan tidak bisa diubah.</p>
+   ${ktpLocked()}
    <p class="sub2">Data pelengkap</p>
    ${picker('pendidikan','Pendidikan Terakhir','Pilih pendidikan','pendidikan')}
    ${input('ibu','Nama Gadis Ibu Kandung','Masukkan nama ibu kandung',{hint:'Sesuai KTP, tanpa sapaan dan gelar'})}
   </div>`,btn:()=>S.scanned?'Lanjut':'Ambil Foto e-KTP',
   notes:[['blu','Referensi layar 2: data e-KTP dibaca otomatis lalu dikonfirmasi.'],['sk','Hasil baca NIK langsung dicek ke CIF: rekening ditemukan → data ditarik; belum ada → nasabah baru; pilih "bukan nasabah" padahal NIK ada → ditolak (Uniqueness).'],
-   ['sk','NIK (2.1 no. 4): 16 digit angka, tidak diawali 0, tanpa huruf/spasi. Bila belum ada validasi Dukcapil: tolak angka berurutan (123456), berulang 7 digit, atau pola 2 digit berulang 5 kali. Coba 1234567890123456.'],
+   ['dq','Data hasil baca e-KTP (NIK s.d. kode pos) dikunci: nasabah tidak bisa mengetik ulang, jadi typo dan isian asal di data identitas dicegah. Hanya Pendidikan Terakhir dan Nama Gadis Ibu Kandung yang diisi manual. Detail alamat dihapus karena tidak ada di e-KTP.'],
+   ['sk','NIK (2.1 no. 4): 16 digit angka, tidak diawali 0, tanpa huruf/spasi. Bila belum ada validasi Dukcapil: tolak angka berurutan (123456), berulang 7 digit, atau pola 2 digit berulang 5 kali.'],
    ['sk','Nama (no. 1) dan Nama Gadis Ibu Kandung (no. 9): tolak List Bad Data (mis. IBU, MAMA, IBUNYA, TIDAK TAU), kata seperti PT/CV/TEST/DUMMY pada nama, deretan spasi, dan huruf berulang 3x pada nama ibu.'],
    ['sk','Tanggal lahir (no. 11): tidak boleh future date atau 16-12-1895 / 01-01-1900. Status perkawinan (no. 8): laki-laki tidak boleh Janda, perempuan tidak boleh Duda.'],
    ['sk','Agama, Status Perkawinan, Pendidikan Terakhir memakai list parameter 3.9, 3.11, 3.12 (kode B/K/D/J, XX–S3, ISL dst).']]},
@@ -540,12 +539,13 @@ const SCREENS=[
    ${choice('nasabah','ya','✓','Ya, saya nasabah bank ini','Siapkan kartu debit dan no. HP yang terdaftar. Data alamat dan pekerjaan ditarik dari data bank.')}
    ${choice('nasabah','tidak','+','Saya bukan nasabah bank ini','Ikuti semua proses berikutnya, simpel kok! Pastikan koneksi internet stabil.')}
    <div class="err" data-err="nasabah"></div></div>`,btn:'Lanjut',
-  notes:[['blu','Halaman pertama (Referensi layar 3): nasabah lama menarik data alamat dan pekerjaan yang sudah ada.'],['sk','Setelah ini foto e-KTP: NIK dicocokkan ke CIF. Nomor Identitas tidak boleh duplikat dengan CIF lain (2.1 no. 4), jadi CIF ganda dicegah sejak awal. Coba pilih "bukan nasabah", lalu ubah NIK menjadi 6471050101900001.']]},
+  notes:[['blu','Halaman pertama (Referensi layar 3): nasabah lama menarik data alamat dan pekerjaan yang sudah ada.'],['sk','Setelah ini foto e-KTP: NIK dicocokkan ke CIF. Nomor Identitas tidak boleh duplikat dengan CIF lain (2.1 no. 4), jadi CIF ganda dicegah sejak awal. Coba pilih "Ya" untuk melihat data tertarik dari CIF.']]},
 
- {id:'domisili',title:'Alamat Domisili',label:'Alamat domisili',keys:()=>S.domSame?[]:addrKeys('dom'),render:()=>`
-  <div class="card"><p class="qh">Masukkan Alamat Domisili</p>
-   <label class="chk" style="margin:10px 0 ${S.domSame?0:18}px"><input type="checkbox" data-check="domSame" ${S.domSame?'checked':''}> Alamat domisili sama dengan e-KTP</label>
-   ${S.domSame?'':addr('dom')}</div>`,btn:'Lanjut',
+ {id:'domisili',title:'Alamat Tempat Tinggal',label:'Alamat domisili',keys:()=>S.domSame?[]:addrKeys('dom'),render:()=>`
+  <div class="card"><p class="qh">Di mana kamu tinggal sekarang?</p>
+   <p class="sub">Alamat domisili adalah <b>alamat tempat kamu tinggal saat ini</b>. Bisa sama dengan alamat di e-KTP, bisa juga berbeda, misalnya kalau kamu sedang kos, mengontrak, atau sudah pindah rumah.</p>
+   <label class="chk" style="margin:10px 0 ${S.domSame?0:12}px"><input type="checkbox" data-check="domSame" ${S.domSame?'checked':''}> Saya tinggal di alamat yang sama dengan e-KTP</label>
+   ${S.domSame?'':`<div class="note-box"><b>Alamatmu sekarang berbeda dengan e-KTP?</b> Isi alamat tempat kamu tinggal saat ini di bawah.</div>${addr('dom')}`}</div>`,btn:'Lanjut',
   notes:[['blu','Referensi layar 4: "sama dengan e-KTP" menyembunyikan isian; tombol cari membuka "Cari Lokasi".'],
    ['sk','Alamat (2.1 no. 18/27): spesial karakter hanya . , \' / : ( ) -, tidak boleh "Lainnya"/"BANK", minimal 3 karakter, tanpa deretan spasi.'],
    ['sk','RT/RW (no. 19–20/28–29): hanya angka, wajib 3 digit (1 → 001). 000 diterima untuk alamat yang tidak memiliki RT/RW.'],
@@ -586,19 +586,19 @@ const SCREENS=[
   notes:[['blu','Referensi layar 10–11.'],['sk','Pekerjaan wali memakai mapping 3.2 yang sama dengan nasabah.']]},
 
  {id:'ringkasan',title:'Ringkasan Data',label:'Periksa data',keys:()=>[],render:renderSummary,btn:'Lanjut',
-  notes:[['blu','Referensi layar 12: ringkasan per bagian dengan ikon ubah.'],['dq','Pilar 02: Data Quality Gate memakai dimensi Buku 11 (Completeness, Validity, Accuracy, Consistency, Uniqueness).'],['dq','Pilar 01 Field Alignment: setiap isian dipetakan ke kode parameter CIF/MDM (Lampiran 3).']]},
+  notes:[['blu','Referensi layar 12: ringkasan per bagian dengan ikon ubah.'],['dq','Pilar 02: aturan kualitas data (Completeness, Validity, Accuracy, Consistency, Uniqueness, Buku 11) dicek langsung di setiap isian. Tombol Lanjut terkunci sampai semua aturan terpenuhi, jadi data yang sampai di ringkasan pasti sudah lolos dan tidak perlu gate terpisah.'],['dq','Pilar 01 Field Alignment: setiap isian dipetakan ke kode parameter CIF/MDM (Lampiran 3).']]},
 
  {id:'tambahan',title:'Data Tambahan',label:'Data tambahan',keys:()=>{const k=['sejakTahun','sejakBulan','rekLain']; if(S.rekLain==='Ya') k.push('bankLain','waktuBank'); k.push('bisnisLN'); if(S.bisnisLN==='Ya') k.push('negara'); k.push('kayaLain'); if(S.kayaLain==='Ya') k.push('sumberKaya'); return k;},render:()=>`
-  <div class="card"><p class="qh">Isi data tambahan ini ya…</p>
-   <div class="f" style="margin-bottom:0"><span class="lbl">Sudah berapa lama kamu tinggal di alamat domisili saat ini?<span class="req">*</span></span></div>
-   <div class="dur">${picker('sejakTahun','Tahun','Pilih tahun','tahunTinggal')}${picker('sejakBulan','Bulan','Pilih bulan','bulanTinggal')}</div>
-   ${radio('rekLain','Apakah kamu memiliki kartu kredit / rekening dari bank / institusi lain?',['Ya','Tidak'])}
-   ${S.rekLain==='Ya'?input('bankLain','Nama Bank/Institusi Penyedia','Mis. Bank Mandiri')+input('waktuBank','Waktu Dikeluarkan','DD/MM/YYYY',{inputmode:'numeric',maxlength:10,mask:'dmy',hint:'Format tanggal/bulan/tahun, contoh 15/08/2021'}):''}
-   ${radio('bisnisLN','Apakah kamu memiliki hubungan bisnis di luar negeri?',['Ya','Tidak'])}
-   ${S.bisnisLN==='Ya'?picker('negara','Negara Hubungan Bisnis','Pilih negara','negara'):''}
-   ${radio('kayaLain','Apakah kamu memiliki sumber kekayaan tambahan?',['Ya','Tidak'])}
-   ${S.kayaLain==='Ya'?picker('sumberKaya','Sumber Kekayaan Tambahan','Pilih sumber','kekayaan'):''}</div>`,btn:'Lanjut',
-  notes:[['blu','Referensi layar 13: pertanyaan ya/tidak dengan isian lanjutan bila "Ya".'],['dq','Isian lanjutan wajib bila menjawab "Ya". Waktu dikeluarkan ditulis lengkap DD/MM/YYYY (bukan bulan saja), tidak boleh future date. Lama tinggal dipilih dalam tahun (0–9) dan bulan (0–11).']]},
+  <div class="card"><p class="qh">Isi data tambahan ini ya…</p><p class="sub">Semua isian di halaman ini opsional. Kamu bisa langsung tekan Lanjut.</p>
+   <div class="f" style="margin-bottom:0"><span class="lbl">Sudah berapa lama kamu tinggal di alamatmu sekarang?</span></div>
+   <div class="dur">${picker('sejakTahun','Tahun','Pilih tahun','tahunTinggal',1)}${picker('sejakBulan','Bulan','Pilih bulan','bulanTinggal',1)}</div>
+   ${radio('rekLain','Apakah kamu memiliki kartu kredit / rekening dari bank / institusi lain?',['Ya','Tidak'],1)}
+   ${S.rekLain==='Ya'?input('bankLain','Nama Bank/Institusi Penyedia','Mis. Bank Mandiri',{opt:true})+input('waktuBank','Waktu Dikeluarkan','DD/MM/YYYY',{opt:true,inputmode:'numeric',maxlength:10,mask:'dmy',hint:'Format tanggal/bulan/tahun, contoh 15/08/2021'}):''}
+   ${radio('bisnisLN','Apakah kamu memiliki hubungan bisnis di luar negeri?',['Ya','Tidak'],1)}
+   ${S.bisnisLN==='Ya'?picker('negara','Negara Hubungan Bisnis','Pilih negara','negara',1):''}
+   ${radio('kayaLain','Apakah kamu memiliki sumber kekayaan tambahan?',['Ya','Tidak'],1)}
+   ${S.kayaLain==='Ya'?picker('sumberKaya','Sumber Kekayaan Tambahan','Pilih sumber','kekayaan',1):''}</div>`,btn:'Lanjut',
+  notes:[['blu','Referensi layar 13: pertanyaan ya/tidak dengan isian lanjutan bila "Ya".'],['dq','Semua data tambahan opsional (tanpa tanda *), nasabah bisa langsung Lanjut. Bila diisi, tetap dicek: waktu dikeluarkan ditulis lengkap DD/MM/YYYY (bukan bulan saja), tidak boleh future date. Lama tinggal dipilih dalam tahun (0–9) dan bulan (0–11).']]},
 
  {id:'riplay',title:'RIPLAY',label:'Info produk',keys:()=>[],render:()=>{ if(!S.riplayAt) S.riplayAt=new Date().toISOString(); return `
   <div class="pdfbar"><span>RIPLAY_TABUNGAN_UMUM.pdf</span><span>Versi umum</span></div><div class="rdoc"><div class="rhead"><b>RIPLAY</b><span>Ringkasan Informasi Produk dan/atau Layanan</span></div>
@@ -613,7 +613,7 @@ const SCREENS=[
     <div class="rbar">PERSYARATAN</div><ul class="rl"><li>Dokumen: KTP; NPWP; Paspor; KIM/KITAS/KITAP</li><li>Setoran awal minimum Rp250.000, setoran berikutnya Rp10.000</li><li>Saldo mengendap minimal Rp50.000</li></ul>
     <div class="rbar">DISCLAIMER</div><ol class="rl"><li>Bank dapat menolak permohonan bila tidak memenuhi persyaratan.</li><li>Nasabah wajib membaca RIPLAY ini sebelum menyetujui.</li></ol>
     <p class="rp" style="color:var(--muted)">Isi mengikuti struktur RIPLAY versi umum; angka hanya ilustrasi untuk prototipe.</p></div>
-  <p class="hint" style="text-align:center">Baca seluruh dokumen sebelum melanjutkan ke persetujuan.</p>`;},btn:'Saya Sudah Membaca',
+  <p class="hint" style="text-align:center">Baca seluruh dokumen sebelum melanjutkan ke persetujuan.</p>`;},btn:'Saya Sudah Membaca',second:'Download Informasi Riplay (PDF)',secondAct:()=>downloadPdf(RIPLAY_PDF_NAME,RIPLAY_PDF),
   notes:[['blu','Referensi layar 14: dokumen RIPLAY ditampilkan sebagai PDF sebelum persetujuan.'],['dq','RIPLAY wajib dibaca sebelum persetujuan; waktu penyampaian RIPLAY dicatat dan ditampilkan di layar berikutnya.']]},
 
  {id:'setuju',title:'Persetujuan',label:'Persetujuan',keys:()=>['c1','c2'].concat(needWali()?['c3']:[]),render:()=>{ const t=new Date(S.riplayAt||Date.now()), dd=t.toLocaleDateString('en-GB'), hm=t.toTimeString().slice(0,5);
@@ -685,6 +685,14 @@ function liveLoop(){ LIVE.raf=0; const v=$('camv'); if(LIVE.step<1||!LIVE.det||!
     else LIVE.hold=Math.max(0,LIVE.hold-1);
     liveUI(msg,pose===want); } }
   LIVE.raf=requestAnimationFrame(liveLoop); }
+function downloadPdf(name,b64){
+  const bytes=Uint8Array.from(atob(b64),c=>c.charCodeAt(0)), blob=new Blob([bytes],{type:'application/pdf'});
+  let inFrame=false; try{ inFrame=window.top!==window.self; }catch(e){ inFrame=true; }
+  if(inFrame){ const c=window.claude; if(!c||!c.use){ toast('Download PDF tersedia di versi web (Vercel)'); return; }
+    c.use('downloads').then(d=>{ if(!d){ toast('Download PDF tersedia di versi web (Vercel)'); return; }
+      return d.save({filename:name,data:blob}).then(()=>toast('RIPLAY diunduh: '+name)); }).catch(()=>toast('Download dibatalkan')); return; }
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),4000); toast('RIPLAY diunduh: '+name); }
 function startFace(){ stopCam(); S.faceScanning=true; render(false); setTimeout(()=>{S.faceScanning=false; S.faceOk=true; render(false); toast('Verifikasi wajah berhasil');},1600); }
 function startKtp(){ stopCam(); S.scanning=true; render(false); setTimeout(()=>{S.scanning=false; S.scanned=true; scanFill(); render(false);},1300); }
 function camWanted(){ const s=flow()[cur]; if(!s) return null;
@@ -726,11 +734,25 @@ function input(k,label,ph,o={}){return `<div class="f"><label for="f_${k}">${lab
   <input class="inp" id="f_${k}" data-field="${k}" type="${o.type||'text'}" value="${esc(S[k])}" placeholder="${ph}" ${o.inputmode?`inputmode="${o.inputmode}"`:''} ${o.mask?`data-mask="${o.mask}"`:''} ${o.maxlength?`maxlength="${o.maxlength}"`:''} autocomplete="off">
   ${o.hint?`<div class="hint">${o.hint}</div>`:''}<div class="err" data-err="${k}"></div></div>`;}
 function selBtn(k,ph,src,title){const v=S[k]; return `<button type="button" class="inp sel" data-pick="${k}" data-src="${src}" data-title="${esc(title||ph)}" id="f_${k}"><span class="${v?'val':'ph'}">${v?esc(v):ph}</span><span class="caret"></span></button>`;}
-function picker(k,label,ph,src){return `<div class="f"><span class="lbl">${label}<span class="req">*</span></span>${selBtn(k,ph,src,label)}<div class="err" data-err="${k}"></div></div>`;}
+function picker(k,label,ph,src,opt){return `<div class="f"><span class="lbl">${label}${opt?'':'<span class="req">*</span>'}</span>${selBtn(k,ph,src,label)}<div class="err" data-err="${k}"></div></div>`;}
 function fixed(label,val,note){return `<div class="f"><span class="lbl">${label}</span><div class="inp sel" style="background:#F2F4F7;cursor:default" aria-readonly="true"><span class="val">${esc(val)}</span><span class="badge info" style="flex:none">Otomatis</span></div>${note?`<div class="hint">${note}</div>`:''}</div>`;}
-function radio(k,label,opts){return `<div class="f"><span class="lbl">${label}<span class="req">*</span></span><div class="radios" role="radiogroup">${opts.map(o=>`<label class="rad"><input type="radio" name="${k}" data-radio="${k}" value="${o}" ${S[k]===o?'checked':''}> ${o}</label>`).join('')}</div><div class="err" data-err="${k}"></div></div>`;}
+function radio(k,label,opts,opt){return `<div class="f"><span class="lbl">${label}${opt?'':'<span class="req">*</span>'}</span><div class="radios" role="radiogroup">${opts.map(o=>`<label class="rad"><input type="radio" name="${k}" data-radio="${k}" value="${o}" ${S[k]===o?'checked':''}> ${o}</label>`).join('')}</div><div class="err" data-err="${k}"></div></div>`;}
 function choice(k,val,ic,t,d){return `<button type="button" class="choice ${S[k]===val?'on':''}" data-choice="${k}" data-val="${val}"><span class="ic">${ic}</span><span><b>${t}</b><span>${d}</span></span></button>`;}
 function chk(k,text,reqd){return `<label class="chk f"><input type="checkbox" data-check="${k}" ${S[k]?'checked':''}> <span>${text}${reqd?'<span class="req">*</span>':''}</span></label>${reqd?`<div class="err" data-err="${k}" style="margin:-8px 0 12px 32px"></div>`:''}`;}
+const KTP_LOCK=['nik','nama','tempatLahir','tglLahir','gender','agama','kawin','ktpAlamat','ktpDetail','ktpRT','ktpRW','ktpKodePos','ktpProv'];
+function ro(label,val){return `<div class="f"><span class="lbl">${label}</span><div class="inp ro" aria-readonly="true"><span class="val">${esc(val||'-')}</span><svg class="lock" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div></div>`;}
+function ktpLocked(){ const kp=kpOf(S.ktpKodePos), t=(S.tglLahir||'').split('-');
+  return `${ro('NIK',S.nik)}${ro('Nama Lengkap',S.nama)}
+   <div class="row2">${ro('Tempat Lahir',S.tempatLahir)}${ro('Tanggal Lahir',t.length===3?t[2]+'-'+t[1]+'-'+t[0]:S.tglLahir)}</div>
+   <div class="row2">${ro('Jenis Kelamin',S.gender)}${ro('Agama',S.agama)}</div>
+   ${ro('Status Perkawinan',S.kawin)}
+   <p class="sub2">Alamat sesuai e-KTP</p>
+   ${ro('Alamat',S.ktpAlamat)}
+   <div class="row2">${ro('RT',S.ktpRT)}${ro('RW',S.ktpRW)}</div>
+   <div class="row2">${ro('Kode Pos',S.ktpKodePos)}${ro('Kelurahan/Desa',kp&&kp.kel)}</div>
+   <div class="row2">${ro('Kecamatan',kp&&kp.kec)}${ro('Kabupaten/Kota',kp&&kp.kab)}</div>
+   ${ro('Provinsi',(kp&&kp.prov)||S.ktpProv)}
+   <p class="hint" style="margin:-4px 0 6px">Data tidak sesuai? <button type="button" class="lnk" data-rescan="1">Foto ulang e-KTP</button></p>`; }
 function addr(p){
   const kp=kpOf(S[p+'KodePos']);
   return `<div class="f"><label for="f_${p}Alamat">Alamat<span class="req">*</span></label>
@@ -760,7 +782,8 @@ function jobBlock(p){ const f=JF[p], j=jobOf(S[f.job]); const W=p==='w'?' Wali':
   else h+=companyField(p,j.tb.split('/')[0].trim()+W)+`<p class="sub2">Alamat ${/Sekolah/.test(j.tb)?'Sekolah/Universitas':'Tempat Bekerja'}${W}</p>${addr(f.addr)}`;
   const bl=bidList(p); h+= bl.length>1?picker(f.bid,'Bidang Pekerjaan'+W,'Pilih bidang pekerjaan','bid_'+p):fixed('Bidang Pekerjaan'+W,S[f.bid]);
   h+= j.c==='PENS'?fixed('Sumber Penghasilan'+W,'Dana Pensiun','Pensiunan otomatis bersumber dari dana pensiun'):waliNoJob(p)?fixed('Sumber Penghasilan'+W,'Investasi','Wali yang tidak bekerja hanya bisa bersumber dari investasi'):picker(f.sumber,'Sumber Penghasilan'+W,'Pilih sumber penghasilan','sumber_'+p);
-  if(p==='k'&&!isWorking('k')&&j.c!=='PENS') h+=`<p class="hint" style="margin:-8px 0 14px">Mengikuti aplikasi referensi: pilih Orang Tua atau Investasi (kode SK 00099 Lainnya).${S.sumberDana==='Orang Tua'?' <b>Data wali wajib diisi di langkah berikutnya.</b>':''}</p>`;
+  if(p==='k'&&j.c==='IBRT') h+=`<p class="hint" style="margin:-8px 0 14px">Ibu rumah tangga: dana berasal dari Orang Tua, Pasangan, Wali, atau Investasi (kode SK 00099 Lainnya).${needWali()?' <b>Data '+(S.sumberDana==='Pasangan'?'pasangan':S.sumberDana==='Wali'?'wali':'orang tua')+' wajib diisi di langkah berikutnya.</b>':''}</p>`;
+  else if(p==='k'&&!isWorking('k')&&j.c!=='PENS') h+=`<p class="hint" style="margin:-8px 0 14px">Mengikuti aplikasi referensi: pilih Orang Tua atau Investasi (kode SK 00099 Lainnya).${S.sumberDana==='Orang Tua'?' <b>Data wali wajib diisi di langkah berikutnya.</b>':''}</p>`;
   h+= p==='k'&&G0_JOBS.includes(j.c)?fixed('Penghasilan Perbulan'+W,'Tidak Memiliki Penghasilan (G0)','Lampiran 2.1 no. 13: untuk PENG/MAHA/PELA/IBRT penghasilan wajib G0'):picker(f.gaji,'Penghasilan Perbulan'+W,'Pilih penghasilan',p==='w'?'penghasilan_w':'penghasilan');
   return h;
 }
@@ -789,17 +812,15 @@ function gate(){
     ['Mapping 3.2 · '+(NA_JOBS.includes(jobOf(S.pekerjaan)?.c)?'Tempat bekerja N/A sesuai mapping':'Nama tempat bekerja sesuai mapping'),map]].map(([t,ks])=>[t,ks.length===0,ks])};
 }
 function renderSummary(){
-  const g=gate(),ok=g.errs.length===0, j=jobOf(S.pekerjaan);
+  const j=jobOf(S.pekerjaan);
   const sec=(t,id,rows)=>`<div class="sumsec"><div class="sumhead"><b>${t}</b><button class="edit" data-goto="${id}" aria-label="Ubah ${t}">✎ Ubah</button></div><dl class="kv">${rows.filter(Boolean).map(([a,b])=>`<dt>${a}</dt><dd>${esc(b)||'<span class="failt">belum diisi</span>'}</dd>`).join('')}</dl></div>`;
   const NA=NA_JOBS.includes(j?.c);
   const jabC=Object.entries(JAB).find(([c,v])=>v===S.jabatan)?.[0], bidC=Object.entries(BID).find(([c,v])=>v===S.bidang)?.[0];
   const row=(a,c,v)=>`<tr><td>${a}</td><td><code>${esc(c??'–')}</code> ${esc(v||'')}</td></tr>`;
-  return `<div class="card gate ${ok?'':'fail'}"><div class="sumhead"><b>Data Quality Gate</b><span class="badge ${ok?'ok':''}" style="${ok?'':'background:#fff;color:var(--err)'}">${ok?'✓ Lolos':g.errs.length+' perlu diperbaiki'}</span></div>
-   ${g.rows.map(([t,p,ks])=>`<div class="gaterow"><span>${t}</span>${p?'<em class="pass">PASS</em>':`<button class="chkbtn" data-fix="${ks.join(',')}" aria-label="Perbaiki: ${t}">CHECK ›</button>`}</div>`).join('')}</div>
-  ${ok?'':'<p class="hint" style="margin:-6px 4px 14px">Tekan CHECK untuk langsung menuju data yang perlu diperbaiki.</p>'}
+  return `<div class="card" style="padding:14px 18px"><p class="qh" style="font-size:17px;margin:0 0 4px">Periksa kembali datamu</p><p class="sub" style="margin:0">Semua isian sudah lolos aturan kualitas data di setiap langkah. Tekan Ubah bila ingin mengganti.</p></div>
   <div class="card">
    ${sec('Data Pribadi','ektp',[['NIK',S.nik],['Nama',S.nama],['Tempat Lahir',S.tempatLahir],['Tanggal Lahir',S.tglLahir],['Jenis Kelamin',S.gender],['Agama',S.agama],['Status',S.kawin],['Pendidikan',S.pendidikan],['Nama Ibu Kandung',S.ibu],['Alamat e-KTP',addrVal('ktp')]])}
-   ${sec('Alamat Domisili','domisili',[['Domisili',S.domSame?'Sama dengan e-KTP':addrVal('dom')]])}
+   ${sec('Alamat Domisili','domisili',[['Alamat tinggal saat ini',S.domSame?'Sama dengan e-KTP':addrVal('dom')]])}
    ${sec('Data Pekerjaan','pekerjaan',[['Pekerjaan',S.pekerjaan],['Jabatan',S.jabatan],[j?.tb.split('/')[0]||'Tempat Bekerja',compVal('k')],['Alamat Tempat Bekerja',NA?'Sama dengan alamat domisili':addrVal('ka')],['Bidang Pekerjaan',S.bidang],['Sumber Penghasilan',S.sumberDana],['Penghasilan Perbulan',S.penghasilan],['Transaksi Harian',S.transaksi],['Tujuan',S.tujuan]])}
    ${needWali()?sec('Data Wali','wali',[['Hubungan',S.hubWali],['NIK Wali',S.nikWali],['Nama Wali',S.namaWali],['Pekerjaan Wali',S.pekerjaanWali],['Tempat Bekerja Wali',compVal('w')]]):''}
   </div>
@@ -826,7 +847,7 @@ function render(top=true){
   $('body').innerHTML=s.render();
   const b=typeof s.btn==='function'?s.btn():(s.btn||'Lanjut');
   $('foot').innerHTML=`<button class="btn" id="next">${b}</button>${s.second?`<button class="btn ghost" id="later">${s.second}</button>`:''}`;
-  $('next').onclick=next; if($('later')) $('later').onclick=()=>toast('Kamu bisa melanjutkan video call dari menu Buka Rekening kapan saja');
+  $('next').onclick=next; if($('later')) $('later').onclick=s.secondAct||(()=>toast('Kamu bisa melanjutkan video call dari menu Buka Rekening kapan saja'));
   bind(); refreshErrors(); updateBtn(); if(top) $('body').scrollTop=0; syncCam(); if(s.id==='wajah'&&!S.faceOk&&!S.faceScanning) liveUI();
   $('pTitle').textContent=s.title+' · '+s.label;
   const TAG={blu:['ref','Pola referensi'],dq:['dq','DQ Gate'],sk:['sk','SK Lampiran']};
@@ -844,6 +865,7 @@ function bind(){
   B.querySelectorAll('[data-loc]').forEach(el=>el.onclick=()=>openLoc(el.dataset.loc));
   B.querySelectorAll('[data-radio]').forEach(el=>el.onchange=()=>{S[el.dataset.radio]=el.value; touched.add(el.dataset.radio); render(false);});
   B.querySelectorAll('[data-goto]').forEach(el=>el.onclick=e=>{e.preventDefault(); e.stopPropagation(); const i=flow().findIndex(x=>x.id===el.dataset.goto); if(i>=0){cur=i; render();}});
+  B.querySelectorAll('[data-rescan]').forEach(el=>el.onclick=()=>{ S.scanned=false; delete S.ktpPhoto; render(); });
   B.querySelectorAll('[data-check]').forEach(el=>el.onchange=()=>{S[el.dataset.check]=el.checked; touched.add(el.dataset.check); render(false);});
   B.querySelectorAll('[data-choice]').forEach(el=>el.onclick=()=>{S[el.dataset.choice]=el.dataset.val; touched.add(el.dataset.choice); render(false);});
   B.querySelectorAll('[data-fix]').forEach(el=>el.onclick=()=>goFix(el.dataset.fix.split(',')));
@@ -914,7 +936,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sheet) closeSheet()
 
 /* ---------- demo data (fiktif) ---------- */
 const GOOD={usia:'adult',nik:'6471054508990003',nama:'RINA KARTIKA SARI',tempatLahir:'Kota Balikpapan',tglLahir:'1999-08-05',gender:'Perempuan',agama:'Islam',kawin:'Belum Kawin',
- ktpAlamat:'Jalan Jenderal Sudirman Gang Swadaya',ktpDetail:'No. 18',ktpRT:'012',ktpRW:'004',ktpKodePos:'76114',ktpProv:'Kalimantan Timur',pendidikan:'Sarjana',ibu:'Siti Aminah',nasabah:'tidak',
+ ktpAlamat:'Jalan Jenderal Sudirman Gang Swadaya No. 18',ktpDetail:'',ktpRT:'012',ktpRW:'004',ktpKodePos:'76114',ktpProv:'Kalimantan Timur',pendidikan:'Sarjana',ibu:'Siti Aminah',nasabah:'tidak',
  domSame:true,pekerjaan:'Pegawai Swasta',jabatan:'Staf',kLain:true,kBadan:'PT',kNamaUsaha:'Borneo Logistik Nusantara',kaAlamat:'Jalan Jenderal Sudirman No. 45',kaDetail:'Lantai 3',kaRT:'003',kaRW:'001',kaKodePos:'76113',kaProv:'Kalimantan Timur',bidang:'Pergudangan dan Aktivitas Penunjang Angkutan',
  sumberDana:'Gaji/Pendapatan Rutin',penghasilan:'Penghasilan 5 - 10 juta',transaksi:'Transaksi Harian s.d. 10 juta',tujuan:'Tabungan',
  hubWali:'Ayah',nikWali:'6471051203700001',namaWali:'Hendra Wijaya',tempatLahirWali:'Kota Samarinda',tglLahirWali:'1970-03-12',genderWali:'Laki-laki',kawinWali:'Kawin',
@@ -929,7 +951,7 @@ const BAD={nik:'1234567890123456',nama:'Ibu',ibu:'IBUNYA',tglLahir:'1900-01-01',
  pekerjaan:'Pegawai Swasta',kLain:true,kBadan:'',kNamaUsaha:'@#$%&*!',kaAlamat:'BANK',kaRT:'000',kaRW:'1',
  nikWali:'1111111111111111',namaWali:'Test Card',tempatLahirWali:'',waAlamat:'-',waRT:'000',pekerjaanWali:'Pegawai Swasta',wLain:true,wBadan:'',wNamaUsaha:'swasta',
  rekLain:'Ya',bankLain:'-',waktuBank:'31/02/2099'};
-function scanFill(){ if(!S.nik){ const g=goodFor(); Object.assign(S,pick(g,['nik','nama','tempatLahir','tglLahir','gender','agama','kawin','ktpAlamat','ktpDetail','ktpRT','ktpRW','ktpKodePos','ktpProv']));
+function scanFill(){ if(!S.nik){ const g=goodFor(); Object.assign(S,pick(g,['nik','nama','tempatLahir','tglLahir','gender','agama','kawin','ktpAlamat','ktpRT','ktpRW','ktpKodePos','ktpProv'])); S.ktpDetail='';
   if(S.nasabah==='ya'){ S.nik=EXISTING_NIK; Object.assign(S,pick(g,['pendidikan','ibu','domSame','pekerjaan','jabatan','bidang','kLain','kBadan','kNamaUsaha','kPerusahaan','kaAlamat','kaDetail','kaRT','kaRW','kaProv','kaKodePos','sumberDana','penghasilan','transaksi','tujuan'])); } } }
 function cifBanner(){ const found=S.nik===EXISTING_NIK;
   if(found&&S.nasabah==='ya') return '<div class="card" style="border:1.5px solid #9AD3B4;background:var(--ok-soft)"><b>✓ Rekening ditemukan</b><p class="hint" style="margin:4px 0 0">NIK terdaftar di CIF bank. Data alamat, pekerjaan, dan keuangan ditarik dari CIF, lalu tetap divalidasi ulang.</p></div>';
@@ -944,7 +966,7 @@ function fill(src){
   if(['ringkasan','riplay','wajah','selesai'].includes(s.id)){ for(const k in G) if(S[k]===undefined) S[k]=G[k]; S.scanned=true; if(isMinor()) Object.assign(S,MINOR); render(false); return; }
   const extra=({ektp:['gender'],domisili:['domSame'],pekerjaan:['pekerjaan','kLain','kBadan','kNamaUsaha','kPerusahaan'],wali4:['pekerjaanWali','wLain','wBadan','wNamaUsaha','wPerusahaan']})[s.id]||[];
   for(let pass=0;pass<3;pass++){ normalizeJob('k'); normalizeJob('w');
-    s.keys().concat(extra).forEach(k=>{ if(src===BAD&&k in BAD) S[k]=BAD[k]; else if(k in G&&(src===GOOD||S[k]===undefined)) S[k]=G[k]; }); }
+    s.keys().concat(extra).forEach(k=>{ if(src===BAD&&k in BAD&&!(s.id==='ektp'&&KTP_LOCK.includes(k))) S[k]=BAD[k]; else if(k in G&&(src===GOOD||S[k]===undefined)) S[k]=G[k]; }); }
   if(src===GOOD) touched.clear(); else s.keys().forEach(k=>touched.add(k));
   render(false);
 }
