@@ -543,7 +543,6 @@ const SCREENS=[
 
  {id:'domisili',title:'Alamat Tempat Tinggal',label:'Alamat domisili',keys:()=>S.domSame?[]:addrKeys('dom'),render:()=>`
   <div class="card"><p class="qh">Apakah alamat tempat tinggal sekarang sama dengan alamat E-KTP?</p>
-   <p class="sub">Alamat domisili adalah alamat tempat kamu tinggal saat ini, misalnya kos, kontrakan, atau rumah baru setelah pindah.</p>
    <label class="chk" style="margin:10px 0 ${S.domSame?0:12}px"><input type="checkbox" data-check="domSame" ${S.domSame?'checked':''}> Saya tinggal di alamat yang sama dengan E-KTP</label>
    ${S.domSame?'':`<div class="note-box"><b>Alamatmu sekarang berbeda dengan e-KTP?</b> Isi alamat tempat kamu tinggal saat ini di bawah.</div>${addr('dom')}`}</div>`,btn:'Lanjut',
   notes:[['blu','Referensi layar 4: "sama dengan e-KTP" menyembunyikan isian; tombol cari membuka "Cari Lokasi".'],
