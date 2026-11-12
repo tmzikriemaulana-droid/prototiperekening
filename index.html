@@ -493,11 +493,10 @@ function normalizeJob(p){ const f=JF[p], j=jobOf(S[f.job]); if(!j) return;
   const jl=jabList(p); if(jl.length===1) S[f.jab]=jl[0].v; else if(S[f.jab]&&!jl.some(x=>x.v===S[f.jab])) delete S[f.jab];
   const bl=bidList(p); if(bl.length===1) S[f.bid]=bl[0].v; else if(S[f.bid]&&!bl.some(x=>x.v===S[f.bid])) delete S[f.bid];
   if(S[f.sumber]&&!sumberList(p).some(x=>x.v===S[f.sumber])) delete S[f.sumber];
-  if(p==='k'&&G0_JOBS.includes(j.c)) S[f.gaji]='Tidak Memiliki Penghasilan';
   if(j.c==='PENS') S[f.sumber]='Dana Pensiun';
   if(p==='k'){ if(S.sumberDana==='Pasangan') S.hubWali='Suami'; }
   if(waliNoJob(p)) S[f.sumber]='Investasi';
-  if(p==='w'&&S[f.gaji]==='Tidak Memiliki Penghasilan') delete S[f.gaji];
+  if(S[f.gaji]==='Tidak Memiliki Penghasilan') delete S[f.gaji];
   if(NA_JOBS.includes(j.c)){ S[p+'Lain']=false; S[p+'Perusahaan']='N/A'; const src=(p==='k'&&!S.domSame)?'dom':(p==='k'?'ktp':'wa'); ['Alamat','Detail','RT','RW','KodePos','Prov'].forEach(x=>S[f.addr+x]=S[src+x]); }
   else if(S[p+'Perusahaan']==='N/A') delete S[p+'Perusahaan'];
 }
@@ -505,7 +504,7 @@ function jobKeys(p){ const f=JF[p], j=jobOf(S[f.job]); const k=[f.job]; if(!j) r
   if(jabList(p).length>1) k.push(f.jab);
   if(!NA_JOBS.includes(j.c)) k.push(...compKeys(p),...addrKeys(f.addr));
   if(bidList(p).length>1) k.push(f.bid);
-  k.push(f.sumber); if(p==='w'||!G0_JOBS.includes(j.c)) k.push(f.gaji);
+  k.push(f.sumber, f.gaji);
   return k; }
 
 /* ---------- screens: same order as aplikasi referensi ---------- */
@@ -559,7 +558,7 @@ const SCREENS=[
    ['sk','Label Nama Tempat Bekerja mengikuti kolom "Tempat Bekerja" di 3.2: Pelajar/Mahasiswa → Nama Sekolah/Universitas, Pensiunan → Nama Perusahaan Terakhir, Wiraswasta → Nama Tempat Usaha. Hanya PENG & IBRT yang N/A.'],
    ['sk','Nama Tempat Bekerja (2.1 no. 38): tidak kosong/deretan spasi, tidak hanya spesial karakter, spesial hanya . , \' / -. Usulan BPIP menambah pilihan dari daftar + tolak isian umum ("-", "swasta", "PT"). Menyasar 63.682 CIF (92%).'],
    ['sk','Alamat Tempat Bekerja (no. 40) mandatory; untuk IBRT/PENG otomatis = alamat domisili.'],
-   ['blu','Tidak bekerja (Pelajar, Mahasiswa, Penganggur, IRT, Pensiunan): sumber penghasilan Orang Tua atau Investasi. Bila Orang Tua → muncul 4 layar data wali seperti aplikasi referensi.'],['sk','Penghasilan (no. 13): PENG/MAHA/PELA/IBRT otomatis G0. Konsistensi no. 35: Pelajar ≤30 th, IRT bukan laki-laki, Pensiunan ≥16 th, usia <15 hanya Pelajar/Penganggur.']]},
+   ['blu','Tidak bekerja (Pelajar, Mahasiswa, Penganggur, IRT, Pensiunan): sumber penghasilan Orang Tua atau Investasi. Bila Orang Tua → muncul 4 layar data wali seperti aplikasi referensi.'],['dq','Penghasilan perbulan: opsi "Tidak Memiliki Penghasilan" (G0) dihapus untuk nasabah dan wali. Nasabah yang tidak bekerja tetap memilih kisaran penghasilan dari sumber dananya (Orang Tua/Investasi/dll). Catatan: berbeda dengan Lampiran 2.1 no. 13 yang mewajibkan G0 untuk PENG/MAHA/PELA/IBRT.'],['sk','Konsistensi no. 35: Pelajar ≤30 th, IRT bukan laki-laki, Pensiunan ≥16 th, usia <15 hanya Pelajar/Penganggur.']]},
 
  {id:'wali',title:'Data Wali',label:'Data wali',when:needWali,keys:()=>['hubWali','nikWali','namaWali'],render:()=>`
   <div class="card"><p class="qh">Yuk, isi data walimu</p>
@@ -783,7 +782,7 @@ function jobBlock(p){ const f=JF[p], j=jobOf(S[f.job]); const W=p==='w'?' Wali':
   h+= j.c==='PENS'?fixed('Sumber Penghasilan'+W,'Dana Pensiun','Pensiunan otomatis bersumber dari dana pensiun'):waliNoJob(p)?fixed('Sumber Penghasilan'+W,'Investasi','Wali yang tidak bekerja hanya bisa bersumber dari investasi'):picker(f.sumber,'Sumber Penghasilan'+W,'Pilih sumber penghasilan','sumber_'+p);
   if(p==='k'&&j.c==='IBRT') h+=`<p class="hint" style="margin:-8px 0 14px">Ibu rumah tangga: dana berasal dari Orang Tua, Pasangan, Wali, atau Investasi (kode SK 00099 Lainnya).${needWali()?' <b>Data '+(S.sumberDana==='Pasangan'?'pasangan':S.sumberDana==='Wali'?'wali':'orang tua')+' wajib diisi di langkah berikutnya.</b>':''}</p>`;
   else if(p==='k'&&!isWorking('k')&&j.c!=='PENS') h+=`<p class="hint" style="margin:-8px 0 14px">Mengikuti aplikasi referensi: pilih Orang Tua atau Investasi (kode SK 00099 Lainnya).${S.sumberDana==='Orang Tua'?' <b>Data wali wajib diisi di langkah berikutnya.</b>':''}</p>`;
-  h+= p==='k'&&G0_JOBS.includes(j.c)?fixed('Penghasilan Perbulan'+W,'Tidak Memiliki Penghasilan (G0)','Lampiran 2.1 no. 13: untuk PENG/MAHA/PELA/IBRT penghasilan wajib G0'):picker(f.gaji,'Penghasilan Perbulan'+W,'Pilih penghasilan',p==='w'?'penghasilan_w':'penghasilan');
+  h+= picker(f.gaji,'Penghasilan Perbulan'+W,'Pilih penghasilan','penghasilan_w');
   return h;
 }
 
@@ -943,7 +942,7 @@ const GOOD={usia:'adult',nik:'6471054508990003',nama:'RINA KARTIKA SARI',tempatL
  sejakTahun:'8 tahun',sejakBulan:'4 bulan',rekLain:'Tidak',bisnisLN:'Tidak',kayaLain:'Tidak',c1:true,c2:true,c3:true};
 const MINOR={tglLahir:'2012-03-14',pekerjaan:'Pelajar',kLain:false,kPerusahaan:'SMA Negeri 1 Balikpapan',kaAlamat:'Jalan Ahmad Yani',kaDetail:'',kaRT:'002',kaRW:'003',kaKodePos:'76141',kaProv:'Kalimantan Timur',sumberDana:'Lainnya',kawin:'Belum Kawin'};
 const goodFor=()=>GOOD;
-const STUDENT={tglLahir:'2004-02-10',pekerjaan:'Mahasiswa',kLain:false,kPerusahaan:'Universitas Balikpapan',kaAlamat:'Jalan Pupuk Raya',kaDetail:'',kaRT:'001',kaRW:'002',kaKodePos:'76123',kaProv:'Kalimantan Timur',sumberDana:'Orang Tua',transaksi:'Transaksi Harian s.d. 10 juta',tujuan:'Tabungan'};
+const STUDENT={tglLahir:'2004-02-10',pekerjaan:'Mahasiswa',kLain:false,kPerusahaan:'Universitas Balikpapan',kaAlamat:'Jalan Pupuk Raya',kaDetail:'',kaRT:'001',kaRW:'002',kaKodePos:'76123',kaProv:'Kalimantan Timur',sumberDana:'Orang Tua',penghasilan:'Penghasilan s.d 5 juta',transaksi:'Transaksi Harian s.d. 10 juta',tujuan:'Tabungan'};
 function fillStudent(){ S.scanned=true; Object.assign(S,GOOD,STUDENT,{nasabah:S.nasabah||'tidak'}); delete S.faceOk; touched.clear(); cur=flow().findIndex(x=>x.id==='pekerjaan'); render(); toast('Contoh: mahasiswa dengan sumber penghasilan Orang Tua → data wali diminta'); }
 const BAD={nik:'1234567890123456',nama:'Ibu',ibu:'IBUNYA',tglLahir:'1900-01-01',kawin:'Duda',ktpAlamat:'Lainnya',ktpRT:'000',ktpRW:'7',
  domSame:false,domAlamat:'BANK',domDetail:'@@@',domRT:'000',domRW:'000',domKodePos:'',
